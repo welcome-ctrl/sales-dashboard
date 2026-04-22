@@ -88,8 +88,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
 .prog-bar { height: 100%; border-radius: 4px; background: var(--accent); }
 .error-box { background: rgb(255, 240, 240); border: 1px solid rgb(255, 204, 204); border-radius: 10px; padding: 20px; text-align: center; color: rgb(204, 0, 0); }
 @media (max-width: 900px) {
-  .summary-row, .two-col, .three-col { grid-template-columns: 1fr; }
+  .two-col, .three-col { grid-template-columns: 1fr; }
   .dash-body { padding: 16px; }
+  .summary-row { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
   body { font-size: 12px; }
@@ -99,26 +100,37 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
   .upload-box { padding: 32px 20px; }
   .upload-box-icon { font-size: 32px; margin-bottom: 10px; }
   .upload-box-text { font-size: 14px; }
-  .dash-topbar { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .dash-topbar-title { font-size: 14px; }
-  .dash-topbar-right { width: 100%; display: flex; gap: 6px; flex-wrap: wrap; }
-  .dash-topbar-right .btn { flex: 1 1 0%; text-align: center; padding: 7px 8px; font-size: 11px; }
+  .dash-topbar { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .dash-topbar-title { font-size: 13px; }
+  .dash-topbar-right { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+  .dash-topbar-right .btn { text-align: center; padding: 7px 4px; font-size: 10px; }
   #topbarFile { display: none; }
-  .dash-body { padding: 12px; }
-  .sec { padding: 14px; border-radius: 10px; }
-  .sec-title { font-size: 13px; }
-  .sum-card { padding: 14px 16px; border-radius: 10px; }
-  .big-num { font-size: 15px; }
-  .chart-wrap { height: 180px; }
-  .tbl-wrap-scroll { max-height: 300px; }
-  table { font-size: 11px; min-width: 400px; }
-  thead th { padding: 7px 8px; }
-  tbody td { padding: 6px 8px; }
+  .dash-body { padding: 10px; }
+  .sec { padding: 12px; border-radius: 10px; margin-bottom: 12px; }
+  .sec-title { font-size: 12px; margin-bottom: 12px; }
+  .summary-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+  .sum-card { padding: 12px; border-radius: 10px; }
+  .sum-card-label { font-size: 10px; margin-bottom: 8px; }
+  .sum-card-key { font-size: 11px; }
+  .sum-card-val { font-size: 11px; }
+  .big-num { font-size: 14px; }
+  .two-col, .three-col { grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+  .mix-inner { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+  .chart-wrap { height: 200px; }
+  .tbl-wrap-scroll { max-height: 280px; }
+  table { font-size: 11px; min-width: 360px; }
+  thead th { padding: 7px 6px; font-size: 10px; }
+  tbody td { padding: 6px; }
+  .cat-tabs { gap: 5px; margin-bottom: 12px; }
   .cat-tab { padding: 5px 10px; font-size: 11px; }
 }
-@media (max-width: 380px) {
-  .dash-topbar-right .btn { font-size: 10px; padding: 6px 4px; }
-  table { font-size: 10px; }
+@media (max-width: 400px) {
+  .summary-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .big-num { font-size: 13px; }
+  .dash-topbar-right .btn { font-size: 9px; padding: 6px 2px; }
+  table { font-size: 10px; min-width: 300px; }
+  thead th { font-size: 9px; padding: 6px 4px; }
+  tbody td { font-size: 10px; padding: 5px 4px; }
 }
     #uploadSection { display: none !important; }
     .dash-topbar-right button { display: none !important; }
@@ -169,7 +181,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <!-- 채널별 매출 비중 -->
     <div class="sec" id="mixSection">
       <div class="sec-title">📊 채널별 매출 비중</div>
-      <div class="two-col" style="margin-bottom:0;">
+      <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
           <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1320" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 660px;"></canvas></div>
         </div>
