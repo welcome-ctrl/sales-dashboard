@@ -93,6 +93,11 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
   .summary-row { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
+  .mob-hide { display: none !important; }
+  table { min-width: 0px !important; }
+  th[style*="min-width"], td[style*="min-width"] { min-width: 0px !important; width: auto !important; }
+}
+@media (max-width: 640px) {
   body { font-size: 12px; }
   #uploadSection { padding: 24px 16px; gap: 14px; }
   .upload-title { font-size: 20px; }
@@ -151,6 +156,8 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       .chart-wrap { height: 200px !important; }
       .mix-inner { display: flex !important; flex-direction: column !important; }
       .sec { padding: 12px !important; }
+      .mob-hide { display: none !important; }
+      table { min-width: 0 !important; }
     }
   </style>
 </head>
@@ -199,7 +206,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">📊 채널별 매출 비중</div>
       <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1358" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 679px;"></canvas></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
         </div>
         <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;">
     <table style="width:100%;">
@@ -207,7 +214,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <tr>
           <th class="tl">채널</th>
           <th class="tr">매출액</th>
-          <th class="tc">비중</th>
+          <th class="tc mob-hide">비중</th>
           <th class="tr">마진액</th>
           <th class="tc">마진율</th>
         </tr>
@@ -219,7 +226,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
               🏪 오프라인
             </td>
             <td class="tr">19,526,200</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
                   <div class="prog-bar" style="width:51.7%;background:#2e72d2;"></div>
@@ -235,7 +242,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
               💻 온라인
             </td>
             <td class="tr">881,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
                   <div class="prog-bar" style="width:2.3%;background:#1abc9c;"></div>
@@ -251,7 +258,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
               🤝 프로젝트
             </td>
             <td class="tr">17,372,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
                   <div class="prog-bar" style="width:46.0%;background:#e07a2e;"></div>
@@ -265,7 +272,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <tr class="bold-row">
           <td class="tl">합계</td>
           <td class="tr">37,779,200</td>
-          <td class="tc">100%</td>
+          <td class="tc mob-hide">100%</td>
           <td class="tr">24,376,740</td>
           <td class="tc mg-mid">64.5%</td>
         </tr>
@@ -276,7 +283,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
@@ -424,22 +431,22 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
         <div class="tbl-wrap" id="catTableWrap">
     <table>
-      <thead><tr><th class="tl">카테고리</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tc">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+      <thead><tr><th class="tl">카테고리</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tc mob-hide">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
       <tbody>
         <tr>
           <td class="tl">
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2e72d2;margin-right:6px;vertical-align:middle;"></span>
             ELECTRIC
           </td>
-          <td class="tc">276</td>
+          <td class="tc mob-hide">276</td>
           <td class="tr">9,229,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:45.2%"></div></div>
               <span>45.2%</span>
@@ -452,9 +459,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1e9e5b;margin-right:6px;vertical-align:middle;"></span>
             LIVING
           </td>
-          <td class="tc">90</td>
+          <td class="tc mob-hide">90</td>
           <td class="tr">3,062,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:15.0%"></div></div>
               <span>15.0%</span>
@@ -467,9 +474,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e07a2e;margin-right:6px;vertical-align:middle;"></span>
             FURNITURE
           </td>
-          <td class="tc">5</td>
+          <td class="tc mob-hide">5</td>
           <td class="tr">2,554,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:12.5%"></div></div>
               <span>12.5%</span>
@@ -482,9 +489,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9b59b6;margin-right:6px;vertical-align:middle;"></span>
             GOODS
           </td>
-          <td class="tc">109</td>
+          <td class="tc mob-hide">109</td>
           <td class="tr">2,109,200</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:10.3%"></div></div>
               <span>10.3%</span>
@@ -497,9 +504,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e05252;margin-right:6px;vertical-align:middle;"></span>
             LIGHT
           </td>
-          <td class="tc">4</td>
+          <td class="tc mob-hide">4</td>
           <td class="tr">1,330,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:6.5%"></div></div>
               <span>6.5%</span>
@@ -512,9 +519,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1abc9c;margin-right:6px;vertical-align:middle;"></span>
             POSTER
           </td>
-          <td class="tc">23</td>
+          <td class="tc mob-hide">23</td>
           <td class="tr">1,115,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:5.5%"></div></div>
               <span>5.5%</span>
@@ -527,9 +534,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f39c12;margin-right:6px;vertical-align:middle;"></span>
             FASHION
           </td>
-          <td class="tc">38</td>
+          <td class="tc mob-hide">38</td>
           <td class="tr">972,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:4.8%"></div></div>
               <span>4.8%</span>
@@ -542,9 +549,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#34495e;margin-right:6px;vertical-align:middle;"></span>
             ETC
           </td>
-          <td class="tc">12</td>
+          <td class="tc mob-hide">12</td>
           <td class="tr">36,000</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:0.2%"></div></div>
               <span>0.2%</span>
@@ -564,42 +571,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane active" data-cat="ELECTRIC">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[플러그] 3C Multi Plug (블루/옐로우) / #5922</td>
-                <td class="tc">16</td>
+                <td class="tc mob-hide">16</td>
                 <td class="tr">944,000</td>
-                <td class="tr">464,000</td>
+                <td class="tr mob-hide">464,000</td>
                 <td class="tc mg-low">49.2%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">25</td>
+                <td class="tc mob-hide">25</td>
                 <td class="tr">750,000</td>
-                <td class="tr">575,000</td>
+                <td class="tr mob-hide">575,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">22</td>
+                <td class="tc mob-hide">22</td>
                 <td class="tr">702,000</td>
-                <td class="tr">565,600</td>
+                <td class="tr mob-hide">565,600</td>
                 <td class="tc mg-good">80.6%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">23</td>
+                <td class="tc mob-hide">23</td>
                 <td class="tr">644,000</td>
-                <td class="tr">496,800</td>
+                <td class="tr mob-hide">496,800</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[케이블] 케이블 링 CC (블루/그린) / #14199</td>
-                <td class="tc">17</td>
+                <td class="tc mob-hide">17</td>
                 <td class="tr">624,000</td>
-                <td class="tr">518,600</td>
+                <td class="tr mob-hide">518,600</td>
                 <td class="tc mg-good">83.1%</td>
               </tr>
           </tbody>
@@ -609,42 +616,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="GOODS">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[키링] Type2 - 15000 / #10585</td>
-                <td class="tc">24</td>
+                <td class="tc mob-hide">24</td>
                 <td class="tr">360,000</td>
-                <td class="tr">252,000</td>
+                <td class="tr mob-hide">252,000</td>
                 <td class="tc mg-good">70.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[키링] Type8 - 55000 / #40000</td>
-                <td class="tc">4</td>
+                <td class="tc mob-hide">4</td>
                 <td class="tr">220,000</td>
-                <td class="tr">154,000</td>
+                <td class="tr mob-hide">154,000</td>
                 <td class="tc mg-good">70.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[오르쏘] 익명의 건물 키링 - 스카이블루 / #14070</td>
-                <td class="tc">9</td>
+                <td class="tc mob-hide">9</td>
                 <td class="tr">216,000</td>
-                <td class="tr">64,800</td>
+                <td class="tr mob-hide">64,800</td>
                 <td class="tc mg-low">30.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[인형] Duracell Bunny (Globetrotter) / #10167</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">190,000</td>
-                <td class="tr">147,000</td>
+                <td class="tr mob-hide">147,000</td>
                 <td class="tc mg-good">77.4%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[시계] Zentra Ticki Tack Clock (green) / #7804</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">145,000</td>
-                <td class="tr">101,500</td>
+                <td class="tr mob-hide">101,500</td>
                 <td class="tc mg-good">70.0%</td>
               </tr>
           </tbody>
@@ -654,42 +661,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="POSTER">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[PB T&amp;J] Frame Poster_T&amp;J (A3) / #1389</td>
-                <td class="tc">15</td>
+                <td class="tc mob-hide">15</td>
                 <td class="tr">600,000</td>
-                <td class="tr">585,000</td>
+                <td class="tr mob-hide">585,000</td>
                 <td class="tc mg-good">97.5%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[포스터] POKEMON 1999 / #13147</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">203,000</td>
-                <td class="tr">153,000</td>
+                <td class="tr mob-hide">153,000</td>
                 <td class="tc mg-good">75.4%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[포스터] Garfield 20*30mm (A4)</td>
-                <td class="tc">3</td>
+                <td class="tc mob-hide">3</td>
                 <td class="tr">120,000</td>
-                <td class="tr">75,000</td>
+                <td class="tr mob-hide">75,000</td>
                 <td class="tc mg-mid">62.5%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[포스터] Tennis &amp; Golf Poster / #10631</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">72,000</td>
-                <td class="tr">22,000</td>
+                <td class="tr mob-hide">22,000</td>
                 <td class="tc mg-low">30.6%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[포스터] Monster Co. / #401</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">40,000</td>
-                <td class="tr">-10,000</td>
+                <td class="tr mob-hide">-10,000</td>
                 <td class="tc mg-low">-25.0%</td>
               </tr>
           </tbody>
@@ -699,42 +706,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="LIVING">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[HEE] Mirror - XL (오렌지) / #14104</td>
-                <td class="tc">6</td>
+                <td class="tc mob-hide">6</td>
                 <td class="tr">360,000</td>
-                <td class="tr">272,400</td>
+                <td class="tr mob-hide">272,400</td>
                 <td class="tc mg-good">75.7%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[HEE] Mirror - XL (그린) / #14103</td>
-                <td class="tc">5</td>
+                <td class="tc mob-hide">5</td>
                 <td class="tr">300,000</td>
-                <td class="tr">227,000</td>
+                <td class="tr mob-hide">227,000</td>
                 <td class="tc mg-good">75.7%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[시계] Swing Desk Clock(추) / #14442</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">260,000</td>
-                <td class="tr">184,000</td>
+                <td class="tr mob-hide">184,000</td>
                 <td class="tc mg-good">70.8%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[AMVEL] Pentagon 72 (Ice Blue) / #14440</td>
-                <td class="tc">3</td>
+                <td class="tc mob-hide">3</td>
                 <td class="tr">168,000</td>
-                <td class="tr">58,800</td>
+                <td class="tr mob-hide">58,800</td>
                 <td class="tc mg-low">35.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
+                <td class="tc mob-hide">3</td>
                 <td class="tr">147,000</td>
-                <td class="tr">123,000</td>
+                <td class="tr mob-hide">123,000</td>
                 <td class="tc mg-good">83.7%</td>
               </tr>
           </tbody>
@@ -744,42 +751,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="FURNITURE">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[의자]Herman Miller Alu Chair( EA105) / #4783</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">850,000</td>
-                <td class="tr">595,000</td>
+                <td class="tr mob-hide">595,000</td>
                 <td class="tc mg-good">70.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[거울] 수퍼 튜브 미러 - L (베이비핑크) B급 / #12325</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">615,000</td>
-                <td class="tr">255,000</td>
+                <td class="tr mob-hide">255,000</td>
                 <td class="tc mg-low">41.5%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[SOLDIDESIGN] Ovetto Abs Trash Can (white-blue) / #12015</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">540,000</td>
-                <td class="tr">250,000</td>
+                <td class="tr mob-hide">250,000</td>
                 <td class="tc mg-low">46.3%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[의자] Blue Seat Teak Stacking Chair / #8177</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">310,000</td>
-                <td class="tr">217,000</td>
+                <td class="tr mob-hide">217,000</td>
                 <td class="tc mg-good">70.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[트롤리] AT HOME TROLLY (실버/화이트) / #13533</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">239,000</td>
-                <td class="tr">169,000</td>
+                <td class="tr mob-hide">169,000</td>
                 <td class="tc mg-good">70.7%</td>
               </tr>
           </tbody>
@@ -789,42 +796,42 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="FASHION">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[삭스어필] 블럭 (네온) / #11755</td>
-                <td class="tc">9</td>
+                <td class="tc mob-hide">9</td>
                 <td class="tr">98,000</td>
-                <td class="tr">62,315</td>
+                <td class="tr mob-hide">62,315</td>
                 <td class="tc mg-mid">63.6%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[SITUS] Minimalist Wallet PVC - Clear Purple#14122</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">89,000</td>
-                <td class="tr">36,640</td>
+                <td class="tr mob-hide">36,640</td>
                 <td class="tc mg-low">41.2%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[SITUS] Minimalist Wallet PVC - Clear / #14123</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">89,000</td>
-                <td class="tr">36,640</td>
+                <td class="tr mob-hide">36,640</td>
                 <td class="tc mg-low">41.2%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">4</span></td>
                 <td class="tl">[SITUS] Minimalist Wallet Tyvek® - Gray / #14113</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">84,000</td>
-                <td class="tr">35,490</td>
+                <td class="tr mob-hide">35,490</td>
                 <td class="tc mg-low">42.3%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">5</span></td>
                 <td class="tl">[EMS] Caffè Latte / #10462</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">58,000</td>
-                <td class="tr">33,780</td>
+                <td class="tr mob-hide">33,780</td>
                 <td class="tc mg-mid">58.2%</td>
               </tr>
           </tbody>
@@ -834,28 +841,28 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="LIGHT">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">[조명] SUPER MOON (화이트) / #12549</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">560,000</td>
-                <td class="tr">440,000</td>
+                <td class="tr mob-hide">440,000</td>
                 <td class="tc mg-good">78.6%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[조명] Mitasi 28 Notte/artemide / #12448</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">490,000</td>
-                <td class="tr">343,000</td>
+                <td class="tr mob-hide">343,000</td>
                 <td class="tc mg-good">70.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">3</span></td>
                 <td class="tl">[조명] SUPER MOON (그린) / #2151</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">280,000</td>
-                <td class="tr">220,000</td>
+                <td class="tr mob-hide">220,000</td>
                 <td class="tc mg-good">78.6%</td>
               </tr>
           </tbody>
@@ -865,21 +872,21 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="cat-pane " data-cat="ETC">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             <tr>
                 <td class="tc"><span class="rank-badge">1</span></td>
                 <td class="tl">택배비</td>
-                <td class="tc">10</td>
+                <td class="tc mob-hide">10</td>
                 <td class="tr">30,000</td>
-                <td class="tr">0</td>
+                <td class="tr mob-hide">0</td>
                 <td class="tc ">0.0%</td>
               </tr><tr>
                 <td class="tc"><span class="rank-badge">2</span></td>
                 <td class="tl">[기타] 배송비 / #14313</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">6,000</td>
-                <td class="tr">3,000</td>
+                <td class="tr mob-hide">3,000</td>
                 <td class="tc mg-mid">50.0%</td>
               </tr>
           </tbody>
@@ -892,7 +899,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
         </div>
         <div class="tbl-wrap" id="onlineTableWrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
@@ -1050,359 +1057,360 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <table>
           <thead><tr>
             <th class="tl">플랫폼</th>
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
             <tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
+                <td class="tc mob-hide">3</td>
                 <td class="tr">147,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:16.7%;"></div></div>
                     <span style="min-width:32px;">16.7%</span>
                   </div>
                 </td>
-                <td class="tr">123,000</td>
+                <td class="tr mob-hide">123,000</td>
                 <td class="tc mg-good">83.7%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">60,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.8%;"></div></div>
                     <span style="min-width:32px;">6.8%</span>
                   </div>
                 </td>
-                <td class="tr">46,000</td>
+                <td class="tr mob-hide">46,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[HEE] 소프트 CC (그레이/오렌지) / #13981</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">50,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.7%;"></div></div>
                     <span style="min-width:32px;">5.7%</span>
                   </div>
                 </td>
-                <td class="tr">39,700</td>
+                <td class="tr mob-hide">39,700</td>
                 <td class="tc mg-good">79.4%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 롤 (스트라이프-블루) / #13714</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">49,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.6%;"></div></div>
                     <span style="min-width:32px;">5.6%</span>
                   </div>
                 </td>
-                <td class="tr">41,000</td>
+                <td class="tr mob-hide">41,000</td>
                 <td class="tc mg-good">83.7%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - L (white) / #10986</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">46,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.2%;"></div></div>
                     <span style="min-width:32px;">5.2%</span>
                   </div>
                 </td>
-                <td class="tr">18,400</td>
+                <td class="tr mob-hide">18,400</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[SALLIES] Pocket Pal (그린) / #13675</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">42,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:4.8%;"></div></div>
                     <span style="min-width:32px;">4.8%</span>
                   </div>
                 </td>
-                <td class="tr">21,400</td>
+                <td class="tr mob-hide">21,400</td>
                 <td class="tc mg-mid">51.0%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">39,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:4.4%;"></div></div>
                     <span style="min-width:32px;">4.4%</span>
                   </div>
                 </td>
-                <td class="tr">32,800</td>
+                <td class="tr mob-hide">32,800</td>
                 <td class="tc mg-good">84.1%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - S (green) / #10989</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">33,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.7%;"></div></div>
                     <span style="min-width:32px;">3.7%</span>
                   </div>
                 </td>
-                <td class="tr">13,200</td>
+                <td class="tr mob-hide">13,200</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - S (yellow) / #10990</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">33,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.7%;"></div></div>
                     <span style="min-width:32px;">3.7%</span>
                   </div>
                 </td>
-                <td class="tr">13,200</td>
+                <td class="tr mob-hide">13,200</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[가방] 슈퍼 플렉스 백 / #14155</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">32,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.6%;"></div></div>
                     <span style="min-width:32px;">3.6%</span>
                   </div>
                 </td>
-                <td class="tr">24,500</td>
+                <td class="tr mob-hide">24,500</td>
                 <td class="tc mg-good">76.6%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">30,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.4%;"></div></div>
                     <span style="min-width:32px;">3.4%</span>
                   </div>
                 </td>
-                <td class="tr">23,000</td>
+                <td class="tr mob-hide">23,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (오렌지) / #14211</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">30,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.4%;"></div></div>
                     <span style="min-width:32px;">3.4%</span>
                   </div>
                 </td>
-                <td class="tr">23,000</td>
+                <td class="tr mob-hide">23,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[EMS] Choco Cream / #13472</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">29,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.3%;"></div></div>
                     <span style="min-width:32px;">3.3%</span>
                   </div>
                 </td>
-                <td class="tr">16,890</td>
+                <td class="tr mob-hide">16,890</td>
                 <td class="tc mg-mid">58.2%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[EMS] Soy Fish / #10386</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">29,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.3%;"></div></div>
                     <span style="min-width:32px;">3.3%</span>
                   </div>
                 </td>
-                <td class="tr">16,890</td>
+                <td class="tr mob-hide">16,890</td>
                 <td class="tc mg-mid">58.2%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (핑크/옐로우) / #12913</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
                     <span style="min-width:32px;">3.2%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (스카이블루/그린) / #13742</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
                     <span style="min-width:32px;">3.2%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (그레이/스카이블루) / #13746</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
                     <span style="min-width:32px;">3.2%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
                     <span style="min-width:32px;">3.2%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (클리어/실버) / #14204</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
                     <span style="min-width:32px;">2.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (스카이블루/그린) / #13740</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
                     <span style="min-width:32px;">2.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (그레이/스카이블루) / #13748</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
                     <span style="min-width:32px;">2.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (핑크/옐로우) / #14205</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
                     <span style="min-width:32px;">2.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 데코 (그리드-테라코타1) / #13120</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">10,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:1.1%;"></div></div>
                     <span style="min-width:32px;">1.1%</span>
                   </div>
                 </td>
-                <td class="tr">8,400</td>
+                <td class="tr mob-hide">8,400</td>
                 <td class="tc mg-good">84.0%</td>
               </tr><tr>
                 <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 데코 (그리드-테라코타 믹스) / #13114</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">10,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:1.1%;"></div></div>
                     <span style="min-width:32px;">1.1%</span>
                   </div>
                 </td>
-                <td class="tr">8,400</td>
+                <td class="tr mob-hide">8,400</td>
                 <td class="tc mg-good">84.0%</td>
               </tr>
             <tr class="bold-row">
               <td></td>
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">29</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">29</td>
               <td class="tr">881,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">632,580</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">632,580</td>
               <td class="tc mg-good">71.8%</td>
             </tr>
           </tbody>
@@ -1413,121 +1421,122 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <table>
           <thead><tr>
             
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
             <tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[HEE] 소프트 CC (그레이/오렌지) / #13981</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">50,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:20.3%;"></div></div>
                     <span style="min-width:32px;">20.3%</span>
                   </div>
                 </td>
-                <td class="tr">39,700</td>
+                <td class="tr mob-hide">39,700</td>
                 <td class="tc mg-good">79.4%</td>
               </tr><tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 롤 (스트라이프-블루) / #13714</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">49,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:19.9%;"></div></div>
                     <span style="min-width:32px;">19.9%</span>
                   </div>
                 </td>
-                <td class="tr">41,000</td>
+                <td class="tr mob-hide">41,000</td>
                 <td class="tc mg-good">83.7%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">39,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:15.9%;"></div></div>
                     <span style="min-width:32px;">15.9%</span>
                   </div>
                 </td>
-                <td class="tr">32,800</td>
+                <td class="tr mob-hide">32,800</td>
                 <td class="tc mg-good">84.1%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">30,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.2%;"></div></div>
                     <span style="min-width:32px;">12.2%</span>
                   </div>
                 </td>
-                <td class="tr">23,000</td>
+                <td class="tr mob-hide">23,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.4%;"></div></div>
                     <span style="min-width:32px;">11.4%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (그레이/스카이블루) / #13748</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.2%;"></div></div>
                     <span style="min-width:32px;">10.2%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (핑크/옐로우) / #14205</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.2%;"></div></div>
                     <span style="min-width:32px;">10.2%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr>
             <tr class="bold-row">
               
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">7</td>
               <td class="tr">246,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">196,300</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">196,300</td>
               <td class="tc mg-good">79.8%</td>
             </tr>
           </tbody>
@@ -1538,121 +1547,122 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <table>
           <thead><tr>
             
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
             <tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">60,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:25.4%;"></div></div>
                     <span style="min-width:32px;">25.4%</span>
                   </div>
                 </td>
-                <td class="tr">46,000</td>
+                <td class="tr mob-hide">46,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[가방] 슈퍼 플렉스 백 / #14155</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">32,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:13.6%;"></div></div>
                     <span style="min-width:32px;">13.6%</span>
                   </div>
                 </td>
-                <td class="tr">24,500</td>
+                <td class="tr mob-hide">24,500</td>
                 <td class="tc mg-good">76.6%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC 2m (오렌지) / #14211</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">30,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.7%;"></div></div>
                     <span style="min-width:32px;">12.7%</span>
                   </div>
                 </td>
-                <td class="tr">23,000</td>
+                <td class="tr mob-hide">23,000</td>
                 <td class="tc mg-good">76.7%</td>
               </tr><tr>
                 
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[EMS] Choco Cream / #13472</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">29,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.3%;"></div></div>
                     <span style="min-width:32px;">12.3%</span>
                   </div>
                 </td>
-                <td class="tr">16,890</td>
+                <td class="tr mob-hide">16,890</td>
                 <td class="tc mg-mid">58.2%</td>
               </tr><tr>
                 
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[EMS] Soy Fish / #10386</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">29,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.3%;"></div></div>
                     <span style="min-width:32px;">12.3%</span>
                   </div>
                 </td>
-                <td class="tr">16,890</td>
+                <td class="tr mob-hide">16,890</td>
                 <td class="tc mg-mid">58.2%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (핑크/옐로우) / #12913</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.9%;"></div></div>
                     <span style="min-width:32px;">11.9%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (스카이블루/그린) / #13742</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.9%;"></div></div>
                     <span style="min-width:32px;">11.9%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr>
             <tr class="bold-row">
               
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">8</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">8</td>
               <td class="tr">236,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">170,480</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">170,480</td>
               <td class="tc mg-good">72.2%</td>
             </tr>
           </tbody>
@@ -1663,121 +1673,122 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <table>
           <thead><tr>
             
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
             <tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - L (white) / #10986</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">46,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:19.8%;"></div></div>
                     <span style="min-width:32px;">19.8%</span>
                   </div>
                 </td>
-                <td class="tr">18,400</td>
+                <td class="tr mob-hide">18,400</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 
-                <td class="tl">FASHION</td>
+                <td class="tl mob-hide">FASHION</td>
                 <td class="tl">[SALLIES] Pocket Pal (그린) / #13675</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">42,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:18.1%;"></div></div>
                     <span style="min-width:32px;">18.1%</span>
                   </div>
                 </td>
-                <td class="tr">21,400</td>
+                <td class="tr mob-hide">21,400</td>
                 <td class="tc mg-mid">51.0%</td>
               </tr><tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - S (green) / #10989</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">33,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:14.2%;"></div></div>
                     <span style="min-width:32px;">14.2%</span>
                   </div>
                 </td>
-                <td class="tr">13,200</td>
+                <td class="tr mob-hide">13,200</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[TETTET] Pot - S (yellow) / #10990</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">33,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:14.2%;"></div></div>
                     <span style="min-width:32px;">14.2%</span>
                   </div>
                 </td>
-                <td class="tr">13,200</td>
+                <td class="tr mob-hide">13,200</td>
                 <td class="tc mg-low">40.0%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 스파이럴 CC (그레이/스카이블루) / #13746</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">28,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.1%;"></div></div>
                     <span style="min-width:32px;">12.1%</span>
                   </div>
                 </td>
-                <td class="tr">21,600</td>
+                <td class="tr mob-hide">21,600</td>
                 <td class="tc mg-good">77.1%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (클리어/실버) / #14204</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.8%;"></div></div>
                     <span style="min-width:32px;">10.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr><tr>
                 
-                <td class="tl">ELECTRIC</td>
+                <td class="tl mob-hide">ELECTRIC</td>
                 <td class="tl">[케이블] 소프트 CC (스카이블루/그린) / #13740</td>
-                <td class="tc">1</td>
+                <td class="tc mob-hide">1</td>
                 <td class="tr">25,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.8%;"></div></div>
                     <span style="min-width:32px;">10.8%</span>
                   </div>
                 </td>
-                <td class="tr">19,100</td>
+                <td class="tr mob-hide">19,100</td>
                 <td class="tc mg-good">76.4%</td>
               </tr>
             <tr class="bold-row">
               
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">7</td>
               <td class="tr">232,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">126,000</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">126,000</td>
               <td class="tc mg-mid">54.3%</td>
             </tr>
           </tbody>
@@ -1788,65 +1799,66 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <table>
           <thead><tr>
             
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
             <tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
+                <td class="tc mob-hide">3</td>
                 <td class="tr">147,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:88.0%;"></div></div>
                     <span style="min-width:32px;">88.0%</span>
                   </div>
                 </td>
-                <td class="tr">123,000</td>
+                <td class="tr mob-hide">123,000</td>
                 <td class="tc mg-good">83.7%</td>
               </tr><tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 데코 (그리드-테라코타1) / #13120</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">10,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.0%;"></div></div>
                     <span style="min-width:32px;">6.0%</span>
                   </div>
                 </td>
-                <td class="tr">8,400</td>
+                <td class="tr mob-hide">8,400</td>
                 <td class="tc mg-good">84.0%</td>
               </tr><tr>
                 
-                <td class="tl">LIVING</td>
+                <td class="tl mob-hide">LIVING</td>
                 <td class="tl">[페이퍼] 데코 (그리드-테라코타 믹스) / #13114</td>
-                <td class="tc">2</td>
+                <td class="tc mob-hide">2</td>
                 <td class="tr">10,000</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.0%;"></div></div>
                     <span style="min-width:32px;">6.0%</span>
                   </div>
                 </td>
-                <td class="tr">8,400</td>
+                <td class="tr mob-hide">8,400</td>
                 <td class="tc mg-good">84.0%</td>
               </tr>
             <tr class="bold-row">
               
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">7</td>
               <td class="tr">167,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">139,800</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">139,800</td>
               <td class="tc mg-good">83.7%</td>
             </tr>
           </tbody>
