@@ -159,6 +159,13 @@
       .summary-row { grid-template-columns: repeat(2, 1fr); }
     }
 
+    /* ───── 모바일 컬럼 숨김 ───── */
+    @media (max-width: 640px) {
+      .mob-hide { display: none !important; }
+      table { min-width: 0 !important; }
+      th[style*="min-width"], td[style*="min-width"] { min-width: 0 !important; width: auto !important; }
+    }
+
     /* ───── RESPONSIVE: MOBILE ───── */
     @media (max-width: 640px) {
       body { font-size: 12px; }
@@ -552,6 +559,8 @@ function buildDashboardHTML() {
       .chart-wrap { height: 200px !important; }
       .mix-inner { display: flex !important; flex-direction: column !important; }
       .sec { padding: 12px !important; }
+      .mob-hide { display: none !important; }
+      table { min-width: 0 !important; }
     }
   </style>
 </head>
@@ -1188,7 +1197,7 @@ function renderMixChart(d) {
         <tr>
           <th class="tl">채널</th>
           <th class="tr">매출액</th>
-          <th class="tc">비중</th>
+          <th class="tc mob-hide">비중</th>
           <th class="tr">마진액</th>
           <th class="tc">마진율</th>
         </tr>
@@ -1202,7 +1211,7 @@ function renderMixChart(d) {
               ${label}
             </td>
             <td class="tr">${values[i] > 0 ? Math.round(values[i]).toLocaleString() : '-'}</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               ${values[i] > 0 ? `<div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
                   <div class="prog-bar" style="width:${(share*100).toFixed(1)}%;background:${COLORS[i]};"></div>
@@ -1217,7 +1226,7 @@ function renderMixChart(d) {
         <tr class="bold-row">
           <td class="tl">합계</td>
           <td class="tr">${Math.round(total).toLocaleString()}</td>
-          <td class="tc">100%</td>
+          <td class="tc mob-hide">100%</td>
           <td class="tr">${Math.round(d.totalMargin || 0).toLocaleString()}</td>
           <td class="tc ${mgClass(d.totalSales > 0 ? d.totalMargin/d.totalSales : 0)}">${pct(d.totalSales > 0 ? d.totalMargin/d.totalSales : 0)}</td>
         </tr>
@@ -1295,16 +1304,16 @@ function renderCatChart(catRows) {
 function renderCatTable(catRows, showroomSales) {
   document.getElementById('catTableWrap').innerHTML = `
     <table>
-      <thead><tr><th class="tl">카테고리</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tc">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+      <thead><tr><th class="tl">카테고리</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tc mob-hide">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
       <tbody>
         ${catRows.map((r, i) => `<tr>
           <td class="tl">
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${CAT_COLORS[i]};margin-right:6px;vertical-align:middle;"></span>
             ${r.cat}
           </td>
-          <td class="tc">${r.qty.toLocaleString()}</td>
+          <td class="tc mob-hide">${r.qty.toLocaleString()}</td>
           <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
-          <td class="tc">
+          <td class="tc mob-hide">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:${(r.shareRate*100).toFixed(1)}%"></div></div>
               <span>${(r.shareRate*100).toFixed(1)}%</span>
@@ -1326,16 +1335,16 @@ function renderTop5(top5) {
     <div class="cat-pane ${i===0?'active':''}" data-cat="${cat}">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <thead><tr><th class="tc">순위</th><th class="tl">상품명</th><th class="tc mob-hide">수량</th><th class="tr">매출액</th><th class="tr mob-hide">마진액</th><th class="tc">마진율</th></tr></thead>
           <tbody>
             ${top5[cat].map((p, idx) => {
               const mr = p.sales > 0 && p.hasMargin ? p.margin / p.sales : null;
               return `<tr>
                 <td class="tc"><span class="rank-badge">${idx+1}</span></td>
                 <td class="tl">${p.name}</td>
-                <td class="tc">${p.qty.toLocaleString()}</td>
+                <td class="tc mob-hide">${p.qty.toLocaleString()}</td>
                 <td class="tr">${Math.round(p.sales).toLocaleString()}</td>
-                <td class="tr">${p.hasMargin ? Math.round(p.margin).toLocaleString() : '-'}</td>
+                <td class="tr mob-hide">${p.hasMargin ? Math.round(p.margin).toLocaleString() : '-'}</td>
                 <td class="tc ${mr!=null?mgClass(mr):''}">${mr != null ? pct(mr) : '-'}</td>
               </tr>`;
             }).join('')}
@@ -1378,12 +1387,12 @@ function renderOnlineItems(d) {
         <table>
           <thead><tr>
             ${showPlat ? '<th class="tl">플랫폼</th>' : ''}
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
+            <th class="tl mob-hide">카테고리</th>
+            <th class="tl">상품명</th>
+            <th class="tc mob-hide">수량</th>
             <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
+            <th class="tc mob-hide">비중</th>
+            <th class="tr mob-hide">마진액</th>
             <th class="tc">마진율</th>
           </tr></thead>
           <tbody>
@@ -1394,27 +1403,28 @@ function renderOnlineItems(d) {
               const platColor = platIdx >= 0 ? PLATFORM_COLORS[platIdx] : '#999';
               return `<tr>
                 ${showPlat ? `<td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${platColor};margin-right:5px;vertical-align:middle;"></span>${r.platform}</td>` : ''}
-                <td class="tl">${r.cat}</td>
+                <td class="tl mob-hide">${r.cat}</td>
                 <td class="tl">${r.name}</td>
-                <td class="tc">${r.qty.toLocaleString()}</td>
+                <td class="tc mob-hide">${r.qty.toLocaleString()}</td>
                 <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
-                <td class="tc">
+                <td class="tc mob-hide">
                   <div style="display:flex;align-items:center;gap:5px;">
                     <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:${(share*100).toFixed(1)}%;"></div></div>
                     <span style="min-width:32px;">${(share*100).toFixed(1)}%</span>
                   </div>
                 </td>
-                <td class="tr">${r.hasMargin ? Math.round(r.margin).toLocaleString() : '-'}</td>
+                <td class="tr mob-hide">${r.hasMargin ? Math.round(r.margin).toLocaleString() : '-'}</td>
                 <td class="tc ${mr!=null?mgClass(mr):''}">${mr != null ? pct(mr) : '-'}</td>
               </tr>`;
             }).join('')}
             <tr class="bold-row">
               ${showPlat ? '<td></td>' : ''}
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">${totalQty.toLocaleString()}</td>
+              <td class="mob-hide"></td>
+              <td class="tl">합계</td>
+              <td class="tc mob-hide">${totalQty.toLocaleString()}</td>
               <td class="tr">${Math.round(total).toLocaleString()}</td>
-              <td class="tc">100%</td>
-              <td class="tr">${Math.round(totalMargin).toLocaleString()}</td>
+              <td class="tc mob-hide">100%</td>
+              <td class="tr mob-hide">${Math.round(totalMargin).toLocaleString()}</td>
               <td class="tc ${total>0?mgClass(totalMargin/total):''}">${total>0?pct(totalMargin/total):'-'}</td>
             </tr>
           </tbody>
