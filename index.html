@@ -104,8 +104,8 @@
     .sum-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
     .sum-card-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
     .sum-card-row:last-child { border-bottom: none; }
-    .sum-card-key { color: var(--muted); }
-    .sum-card-val { font-weight: 700; }
+    .sum-card-key { color: var(--muted); white-space: nowrap; }
+    .sum-card-val { font-weight: 700; white-space: nowrap; text-align: right; }
     .big-num { font-size: 18px; color: var(--accent); }
 
     /* ───── SECTIONS ───── */
@@ -503,7 +503,16 @@ async function uploadToGitHub() {
 function buildDashboardHTML() {
   const d = window._dashData;
   const title = document.getElementById('topbarTitle').textContent || '매출 대시보드';
+
+  // 인라인 스타일 임시 제거 (모바일 CSS가 작동하도록)
+  const sc = document.getElementById('summaryCards');
+  const scStyle = sc ? sc.style.gridTemplateColumns : '';
+  if (sc) sc.style.gridTemplateColumns = '';
+
   const cloned = document.getElementById('dashboard').cloneNode(true);
+
+  // 인라인 스타일 복원
+  if (sc && scStyle) sc.style.gridTemplateColumns = scStyle;
   const css = Array.from(document.styleSheets).map(s => {
     try { return Array.from(s.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
   }).join('\n');
@@ -528,6 +537,22 @@ function buildDashboardHTML() {
     .dash-topbar-right button { display: none !important; }
     .gh-modal-overlay { display: none !important; }
     body { background: #f0f2f5; }
+    /* 모바일 강제 적용 (저장된 HTML용) */
+    @media (max-width: 900px) {
+      .summary-row { grid-template-columns: repeat(2, 1fr) !important; }
+      .two-col, .three-col { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 640px) {
+      .dash-body { padding: 10px !important; }
+      .summary-row { gap: 8px !important; margin-bottom: 12px !important; }
+      .sum-card { padding: 12px !important; }
+      .big-num { font-size: 13px !important; }
+      .sum-card-val { font-size: 11px !important; white-space: nowrap; }
+      .sum-card-key { font-size: 11px !important; }
+      .chart-wrap { height: 200px !important; }
+      .mix-inner { display: flex !important; flex-direction: column !important; }
+      .sec { padding: 12px !important; }
+    }
   </style>
 </head>
 <body>
