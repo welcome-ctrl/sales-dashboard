@@ -3,136 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📊 2026년 4월 매출 대시보드</title>
+  <title>매출 대시보드 생성기</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
-    :root { --primary: #1a2a4a; --accent: #2e72d2; --green: #1e9e5b; --red: #e05252; --orange: #e07a2e; --bg: #f0f2f5; --card: #ffffff; --border: #e2e6ea; --text: #222; --muted: #6b7280; }
-* { box-sizing: border-box; margin: 0px; padding: 0px; }
-body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
-#uploadSection { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; gap: 20px; background: linear-gradient(135deg, rgb(26, 42, 74) 0%, rgb(46, 74, 122) 100%); }
-.upload-logo { font-size: 48px; }
-.upload-title { font-size: 28px; font-weight: 800; color: rgb(255, 255, 255); letter-spacing: -0.5px; }
-.upload-sub { color: rgba(255, 255, 255, 0.7); font-size: 15px; }
-.upload-box { border: 2px dashed rgba(255, 255, 255, 0.4); border-radius: 16px; padding: 50px 70px; text-align: center; cursor: pointer; transition: 0.25s; background: rgba(255, 255, 255, 0.08); max-width: 520px; width: 100%; }
-.upload-box:hover, .upload-box.dragover { border-color: rgb(255, 255, 255); background: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
-.upload-box-icon { font-size: 40px; margin-bottom: 14px; }
-.upload-box-text { font-size: 16px; font-weight: 600; color: rgb(255, 255, 255); margin-bottom: 8px; }
-.upload-box-hint { font-size: 12px; color: rgba(255, 255, 255, 0.6); line-height: 1.8; }
-.upload-box-hint span { display: inline-block; background: rgba(255, 255, 255, 0.15); padding: 2px 8px; border-radius: 4px; margin: 2px; }
-#dashboard { display: none; }
-#dashboard.visible { display: block; }
-.dash-topbar { background: var(--primary); color: white; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0px; z-index: 100; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px; }
-.dash-topbar-title { font-size: 18px; font-weight: 700; }
-.dash-topbar-right { display: flex; gap: 10px; align-items: center; }
-.btn { padding: 7px 16px; border-radius: 8px; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; cursor: pointer; font-size: 12px; font-family: inherit; font-weight: 600; transition: 0.15s; }
-.btn-outline { background: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
-.btn-outline:hover { background: rgba(255, 255, 255, 0.15); }
-.btn-excel { background: rgb(29, 111, 66); color: white; border: 1px solid rgb(29, 111, 66); }
-.btn-excel:hover { background: rgb(23, 90, 53); }
-.btn-github { background: rgb(36, 41, 47); color: white; border: 1px solid rgb(36, 41, 47); }
-.btn-github:hover { background: rgb(61, 68, 77); }
-.gh-modal-overlay { display: none; position: fixed; inset: 0px; background: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center; }
-.gh-modal-overlay.open { display: flex; }
-.gh-modal-box { background: white; border-radius: 16px; padding: 28px 32px; width: 480px; max-width: 95vw; box-shadow: rgba(0, 0, 0, 0.3) 0px 20px 60px; }
-.gh-modal-title { font-size: 16px; font-weight: 800; color: rgb(26, 42, 74); margin-bottom: 6px; }
-.gh-modal-sub { font-size: 12px; color: rgb(107, 114, 128); margin-bottom: 18px; line-height: 1.6; }
-.gh-modal-label { font-size: 12px; font-weight: 700; color: rgb(55, 65, 81); margin-bottom: 5px; }
-.gh-modal-input { width: 100%; padding: 9px 12px; border: 1px solid rgb(209, 213, 219); border-radius: 8px; font-size: 12px; font-family: inherit; outline: none; margin-bottom: 12px; }
-.gh-modal-input:focus { border-color: rgb(36, 41, 47); box-shadow: rgba(36, 41, 47, 0.12) 0px 0px 0px 3px; }
-.gh-modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
-.gh-modal-btns button { padding: 9px 20px; border-radius: 8px; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; }
-.gh-modal-cancel { background: rgb(243, 244, 246); color: rgb(55, 65, 81); }
-.gh-modal-cancel:hover { background: rgb(229, 231, 235); }
-.gh-modal-confirm { background: rgb(36, 41, 47); color: white; }
-.gh-modal-confirm:hover { background: rgb(61, 68, 77); }
-.gh-modal-status { margin-top: 12px; font-size: 12px; text-align: center; min-height: 18px; }
-.gh-modal-status.ok { color: rgb(29, 111, 66); font-weight: 700; }
-.gh-modal-status.err { color: rgb(220, 38, 38); }
-.dash-body { padding: 24px 28px; max-width: 1440px; margin: 0px auto; }
-.summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-.sum-card { background: var(--card); border-radius: 14px; padding: 20px 22px; box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 4px; }
-.sum-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
-.sum-card-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0px; border-bottom: 1px solid rgb(240, 240, 240); }
-.sum-card-row:last-child { border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; }
-.sum-card-key { color: var(--muted); }
-.sum-card-val { font-weight: 700; }
-.big-num { font-size: 18px; color: var(--accent); }
-.sec { background: var(--card); border-radius: 14px; padding: 20px 22px; box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 4px; margin-bottom: 20px; }
-.sec-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-.chart-wrap { position: relative; height: 230px; }
-.tbl-wrap { overflow-x: auto; }
-.tbl-wrap-scroll { overflow-y: auto; max-height: 360px; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-thead th { background: var(--primary); color: white; padding: 9px 10px; white-space: nowrap; position: sticky; top: 0px; z-index: 1; }
-tbody td { padding: 7px 10px; border-bottom: 1px solid rgb(245, 245, 245); white-space: nowrap; }
-tbody tr:hover td { background: rgb(248, 249, 252); }
-.tc { text-align: center; }
-.tr { text-align: right; }
-.tl { text-align: left; }
-.bold-row td { font-weight: 700; background: rgb(240, 244, 250) !important; }
-.sun td { background: rgb(255, 245, 245); }
-.sat td { background: rgb(255, 248, 240); }
-.rank-badge { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: white; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; }
-.cat-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.cat-tab { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 500; transition: 0.15s; background: white; font-family: inherit; }
-.cat-tab:hover { border-color: var(--accent); color: var(--accent); }
-.cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-.cat-pane { display: none; }
-.cat-pane.active { display: block; }
-.mg-good { color: var(--green); font-weight: 600; }
-.mg-mid { color: var(--orange); font-weight: 600; }
-.mg-low { color: var(--red); font-weight: 600; }
-.prog-bar-wrap { background: rgb(233, 236, 239); border-radius: 4px; height: 8px; overflow: hidden; }
-.prog-bar { height: 100%; border-radius: 4px; background: var(--accent); }
-.error-box { background: rgb(255, 240, 240); border: 1px solid rgb(255, 204, 204); border-radius: 10px; padding: 20px; text-align: center; color: rgb(204, 0, 0); }
-@media (max-width: 900px) {
-  .summary-row, .two-col, .three-col { grid-template-columns: 1fr; }
-  .dash-body { padding: 16px; }
-}
-@media (max-width: 640px) {
-  body { font-size: 12px; }
-  #uploadSection { padding: 24px 16px; gap: 14px; }
-  .upload-title { font-size: 20px; }
-  .upload-sub { font-size: 13px; text-align: center; }
-  .upload-box { padding: 32px 20px; }
-  .upload-box-icon { font-size: 32px; margin-bottom: 10px; }
-  .upload-box-text { font-size: 14px; }
-  .dash-topbar { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .dash-topbar-title { font-size: 14px; }
-  .dash-topbar-right { width: 100%; display: flex; gap: 6px; flex-wrap: wrap; }
-  .dash-topbar-right .btn { flex: 1 1 0%; text-align: center; padding: 7px 8px; font-size: 11px; }
-  #topbarFile { display: none; }
-  .dash-body { padding: 12px; }
-  .sec { padding: 14px; border-radius: 10px; }
-  .sec-title { font-size: 13px; }
-  .sum-card { padding: 14px 16px; border-radius: 10px; }
-  .big-num { font-size: 15px; }
-  .chart-wrap { height: 180px; }
-  .tbl-wrap-scroll { max-height: 300px; }
-  table { font-size: 11px; min-width: 400px; }
-  thead th { padding: 7px 8px; }
-  tbody td { padding: 6px 8px; }
-  .cat-tab { padding: 5px 10px; font-size: 11px; }
-}
-@media (max-width: 380px) {
-  .dash-topbar-right .btn { font-size: 10px; padding: 6px 4px; }
-  table { font-size: 10px; }
-}
-    #uploadSection { display: none !important; }
-    .dash-topbar-right button { display: none !important; }
-    .gh-modal-overlay { display: none !important; }
-    body { background: #f0f2f5; }
+    :root {
+      --primary: #1a2a4a;
+      --accent: #2e72d2;
+      --green: #1e9e5b;
+      --red: #e05252;
+      --orange: #e07a2e;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --border: #e2e6ea;
+      --text: #222;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
+
+
+    /* ───── UPLOAD ───── */
+    #uploadSection {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 40px; gap: 20px;
+      background: linear-gradient(135deg, #1a2a4a 0%, #2e4a7a 100%);
+    }
+    .upload-logo { font-size: 48px; }
+    .upload-title { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .upload-sub { color: rgba(255,255,255,0.7); font-size: 15px; }
+    .upload-box {
+      border: 2px dashed rgba(255,255,255,0.4); border-radius: 16px; padding: 50px 70px;
+      text-align: center; cursor: pointer; transition: all 0.25s; background: rgba(255,255,255,0.08);
+      max-width: 520px; width: 100%;
+    }
+    .upload-box:hover, .upload-box.dragover {
+      border-color: #fff; background: rgba(255,255,255,0.15); transform: translateY(-2px);
+    }
+    .upload-box-icon { font-size: 40px; margin-bottom: 14px; }
+    .upload-box-text { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .upload-box-hint { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.8; }
+    .upload-box-hint span { display: inline-block; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; margin: 2px; }
+
+    /* ───── DASHBOARD ───── */
+    #dashboard { display: none; }
+    #dashboard.visible { display: block; }
+
+    .dash-topbar {
+      background: var(--primary); color: white; padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .dash-topbar-title { font-size: 18px; font-weight: 700; }
+    .dash-topbar-right { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      padding: 7px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px;
+      font-family: inherit; font-weight: 600; transition: all 0.15s;
+    }
+    .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+    .btn-outline:hover { background: rgba(255,255,255,0.15); }
+    .btn-excel { background: #1d6f42; color: white; border: 1px solid #1d6f42; }
+    .btn-excel:hover { background: #175a35; }
+    .btn-github { background: #24292f; color: white; border: 1px solid #24292f; }
+    .btn-github:hover { background: #3d444d; }
+
+    /* ───── GITHUB MODAL ───── */
+    .gh-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 9999; align-items: center; justify-content: center;
+    }
+    .gh-modal-overlay.open { display: flex; }
+    .gh-modal-box {
+      background: white; border-radius: 16px; padding: 28px 32px; width: 480px; max-width: 95vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .gh-modal-title { font-size: 16px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
+    .gh-modal-sub { font-size: 12px; color: #6b7280; margin-bottom: 18px; line-height: 1.6; }
+    .gh-modal-label { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 5px; }
+    .gh-modal-input {
+      width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px;
+      font-size: 12px; font-family: inherit; outline: none; margin-bottom: 12px;
+    }
+    .gh-modal-input:focus { border-color: #24292f; box-shadow: 0 0 0 3px rgba(36,41,47,0.12); }
+    .gh-modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    .gh-modal-btns button { padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; }
+    .gh-modal-cancel { background: #f3f4f6; color: #374151; }
+    .gh-modal-cancel:hover { background: #e5e7eb; }
+    .gh-modal-confirm { background: #24292f; color: white; }
+    .gh-modal-confirm:hover { background: #3d444d; }
+    .gh-modal-status { margin-top: 12px; font-size: 12px; text-align: center; min-height: 18px; }
+    .gh-modal-status.ok { color: #1d6f42; font-weight: 700; }
+    .gh-modal-status.err { color: #dc2626; }
+
+    .dash-body { padding: 24px 28px; max-width: 1440px; margin: 0 auto; }
+
+    /* ───── SUMMARY CARDS ───── */
+    .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .sum-card { background: var(--card); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .sum-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
+    .sum-card-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+    .sum-card-row:last-child { border-bottom: none; }
+    .sum-card-key { color: var(--muted); }
+    .sum-card-val { font-weight: 700; }
+    .big-num { font-size: 18px; color: var(--accent); }
+
+    /* ───── SECTIONS ───── */
+    .sec { background: var(--card); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 20px; }
+    .sec-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+    /* ───── CHART ───── */
+    .chart-wrap { position: relative; height: 230px; }
+
+    /* ───── TABLE ───── */
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tbl-wrap-scroll { overflow-y: auto; max-height: 360px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { background: var(--primary); color: white; padding: 9px 10px; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+    tbody td { padding: 7px 10px; border-bottom: 1px solid #f5f5f5; white-space: nowrap; }
+    tbody tr:hover td { background: #f8f9fc; }
+    .tc { text-align: center; }
+    .tr { text-align: right; }
+    .tl { text-align: left; }
+    .bold-row td { font-weight: 700; background: #f0f4fa !important; }
+    .sun td { background: #fff5f5; }
+    .sat td { background: #fff8f0; }
+    .rank-badge { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: white; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; }
+
+    /* ───── CATEGORY TABS ───── */
+    .cat-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .cat-tab { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; background: white; font-family: inherit; }
+    .cat-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .cat-pane { display: none; }
+    .cat-pane.active { display: block; }
+
+    /* ───── MARGIN COLORS ───── */
+    .mg-good { color: var(--green); font-weight: 600; }
+    .mg-mid { color: var(--orange); font-weight: 600; }
+    .mg-low { color: var(--red); font-weight: 600; }
+
+    /* ───── PROGRESS BAR ───── */
+    .prog-bar-wrap { background: #e9ecef; border-radius: 4px; height: 8px; overflow: hidden; }
+    .prog-bar { height: 100%; border-radius: 4px; background: var(--accent); }
+
+    /* ───── ERROR BOX ───── */
+    .error-box { background: #fff0f0; border: 1px solid #ffcccc; border-radius: 10px; padding: 20px; text-align: center; color: #c00; }
+
+    /* ───── RESPONSIVE: TABLET ───── */
+    @media (max-width: 900px) {
+      .two-col, .three-col { grid-template-columns: 1fr; }
+      .dash-body { padding: 16px; }
+      .summary-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ───── RESPONSIVE: MOBILE ───── */
+    @media (max-width: 640px) {
+      body { font-size: 12px; }
+
+      /* 업로드 화면 */
+      #uploadSection { padding: 24px 16px; gap: 14px; }
+      .upload-title { font-size: 20px; }
+      .upload-sub { font-size: 13px; text-align: center; }
+      .upload-box { padding: 32px 20px; }
+      .upload-box-icon { font-size: 32px; margin-bottom: 10px; }
+      .upload-box-text { font-size: 14px; }
+
+      /* 상단 바 */
+      .dash-topbar { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
+      .dash-topbar-title { font-size: 13px; }
+      .dash-topbar-right { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+      .dash-topbar-right .btn { text-align: center; padding: 7px 4px; font-size: 10px; }
+      #topbarFile { display: none; }
+
+      /* 대시보드 본문 */
+      .dash-body { padding: 10px; }
+      .sec { padding: 12px; border-radius: 10px; margin-bottom: 12px; }
+      .sec-title { font-size: 12px; margin-bottom: 12px; }
+
+      /* 요약 카드: 모바일 2열 */
+      .summary-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+      .sum-card { padding: 12px; border-radius: 10px; }
+      .sum-card-label { font-size: 10px; margin-bottom: 8px; }
+      .sum-card-key { font-size: 11px; }
+      .sum-card-val { font-size: 11px; }
+      .big-num { font-size: 14px; }
+
+      /* 2열 → 1열 */
+      .two-col, .three-col { grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+
+      /* 채널별 비중: 차트 위, 테이블 아래 세로 배치 */
+      .mix-inner { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+
+      /* 차트 */
+      .chart-wrap { height: 200px; }
+
+      /* 테이블 */
+      .tbl-wrap-scroll { max-height: 280px; }
+      table { font-size: 11px; min-width: 360px; }
+      thead th { padding: 7px 6px; font-size: 10px; }
+      tbody td { padding: 6px 6px; }
+
+      /* 탭 */
+      .cat-tabs { gap: 5px; margin-bottom: 12px; }
+      .cat-tab { padding: 5px 10px; font-size: 11px; }
+    }
+
+    @media (max-width: 400px) {
+      .summary-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .big-num { font-size: 13px; }
+      .dash-topbar-right .btn { font-size: 9px; padding: 6px 2px; }
+      table { font-size: 10px; min-width: 300px; }
+      thead th { font-size: 9px; padding: 6px 4px; }
+      tbody td { font-size: 10px; padding: 5px 4px; }
+    }
   </style>
 </head>
 <body>
-  <div id="dashboard" class="visible">
-    
+
+<!-- ─────────────────────── UPLOAD ─────────────────────── -->
+<div id="uploadSection">
+  <div class="upload-logo">📊</div>
+  <div class="upload-title">매출 대시보드 생성기</div>
+  <div class="upload-sub">엑셀 파일을 업로드하면 대시보드를 자동으로 만들어드립니다</div>
+  <div class="upload-box" id="uploadBox">
+    <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+    <div class="upload-box-icon">📂</div>
+    <div class="upload-box-text">파일을 드래그하거나 클릭하여 업로드</div>
+    <div class="upload-box-hint">
+      필요한 탭:<br>
+      <span>B2B 및 프로젝트 매출</span>
+      <span>결제 상세내역</span>
+      <span>매출리포트(상품별)_월</span>
+      <span>원가</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────────── GITHUB MODAL ─────────────────────── -->
+<div class="gh-modal-overlay" id="ghModal" onclick="if(event.target===this)closeGitHubModal()">
+  <div class="gh-modal-box">
+    <div class="gh-modal-title">☁️ GitHub에 대시보드 저장</div>
+    <div class="gh-modal-sub">생성된 대시보드를 GitHub Pages에 바로 업로드합니다.</div>
+    <div class="gh-modal-label">GitHub 토큰</div>
+    <input class="gh-modal-input" id="ghToken" type="password" placeholder="ghp_...">
+    <div class="gh-modal-label">저장소 (owner/repo)</div>
+    <input class="gh-modal-input" id="ghRepo" type="text" placeholder="예: welcome-ctrl/sales-dashboard">
+    <div class="gh-modal-label">저장 파일명</div>
+    <input class="gh-modal-input" id="ghPath" type="text" placeholder="result.html">
+    <div class="gh-modal-btns">
+      <button class="gh-modal-cancel" onclick="closeGitHubModal()">취소</button>
+      <button class="gh-modal-confirm" id="ghUploadBtn" onclick="uploadToGitHub()">저장</button>
+    </div>
+    <div class="gh-modal-status" id="ghStatus"></div>
+  </div>
+</div>
+
+<!-- ─────────────────────── DASHBOARD ─────────────────────── -->
+<div id="dashboard">
   <div class="dash-topbar">
-    <div class="dash-topbar-title" id="topbarTitle">📊 2026년 4월 매출 대시보드</div>
+    <div class="dash-topbar-title" id="topbarTitle">📊 매출 대시보드</div>
     <div class="dash-topbar-right">
-      <span id="topbarFile" style="font-size:12px; color:rgba(255,255,255,0.6);">SS_2026년 4월 매출리포트.xlsx</span>
+      <span id="topbarFile" style="font-size:12px; color:rgba(255,255,255,0.6);"></span>
       <button class="btn btn-outline" onclick="downloadDashboard()">⬇ HTML 저장</button>
       <button class="btn btn-excel" onclick="downloadExcel()">📊 엑셀 다운로드</button>
       <button class="btn btn-github" onclick="openGitHubModal()">☁️ GitHub 저장</button>
@@ -141,1740 +276,268 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
   </div>
   <div class="dash-body">
     <div id="errorBox"></div>
-    <div class="summary-row" id="summaryCards" style="grid-template-columns: repeat(4, 1fr);">
-    <div class="sum-card">
-      <div class="sum-card-label">🏪 오프라인 (쇼룸)</div>
-      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">19,526,200원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">13,329,800원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val mg-mid">68.3%</span></div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-card-label">💻 온라인 매출</div>
-      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">881,000원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">557,110원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val mg-mid">63.2%</span></div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-card-label">🤝 프로젝트 (B2B)</div>
-      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">17,372,000원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">10,414,360원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val mg-mid">59.9%</span></div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-card-label">💰 TOTAL</div>
-      <div class="sum-card-row"><span class="sum-card-key">총 매출액</span><span class="sum-card-val big-num">37,779,200원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">24,376,740원</span></div>
-      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val mg-mid">64.5%</span></div>
-    </div></div>
+    <div class="summary-row" id="summaryCards"></div>
     <!-- 채널별 매출 비중 -->
     <div class="sec" id="mixSection">
       <div class="sec-title">📊 채널별 매출 비중</div>
-      <div class="two-col" style="margin-bottom:0;">
+      <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1320" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 660px;"></canvas></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart"></canvas></div>
         </div>
-        <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;">
-    <table style="width:100%;">
-      <thead>
-        <tr>
-          <th class="tl">채널</th>
-          <th class="tr">매출액</th>
-          <th class="tc">비중</th>
-          <th class="tr">마진액</th>
-          <th class="tc">마진율</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td class="tl" style="font-weight:600;">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2e72d2;margin-right:7px;vertical-align:middle;"></span>
-              🏪 오프라인
-            </td>
-            <td class="tr">19,526,200</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
-                  <div class="prog-bar" style="width:51.7%;background:#2e72d2;"></div>
-                </div>
-                <span style="min-width:36px;">51.7%</span>
-              </div>
-            </td>
-            <td class="tr">13,329,800</td>
-            <td class="tc mg-mid">68.3%</td>
-          </tr><tr>
-            <td class="tl" style="font-weight:600;">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#1abc9c;margin-right:7px;vertical-align:middle;"></span>
-              💻 온라인
-            </td>
-            <td class="tr">881,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
-                  <div class="prog-bar" style="width:2.3%;background:#1abc9c;"></div>
-                </div>
-                <span style="min-width:36px;">2.3%</span>
-              </div>
-            </td>
-            <td class="tr">557,110</td>
-            <td class="tc mg-mid">63.2%</td>
-          </tr><tr>
-            <td class="tl" style="font-weight:600;">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e07a2e;margin-right:7px;vertical-align:middle;"></span>
-              🤝 프로젝트
-            </td>
-            <td class="tr">17,372,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
-                  <div class="prog-bar" style="width:46.0%;background:#e07a2e;"></div>
-                </div>
-                <span style="min-width:36px;">46.0%</span>
-              </div>
-            </td>
-            <td class="tr">10,414,360</td>
-            <td class="tc mg-mid">59.9%</td>
-          </tr>
-        <tr class="bold-row">
-          <td class="tl">합계</td>
-          <td class="tr">37,779,200</td>
-          <td class="tc">100%</td>
-          <td class="tr">24,376,740</td>
-          <td class="tc mg-mid">64.5%</td>
-        </tr>
-      </tbody>
-    </table></div>
+        <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;"></div>
       </div>
     </div>
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
-        <div class="tbl-wrap tbl-wrap-scroll" id="dailyTableWrap">
-    <table>
-      <thead><tr><th class="tc">날짜</th><th class="tc">요일</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-      <tbody>
-        <tr class="">
-            <td class="tc">4/1</td>
-            <td class="tc">수</td>
-            <td class="tr">423,000</td>
-            <td class="tr">269,225</td>
-            <td class="tc mg-mid">63.6%</td>
-          </tr><tr class="">
-            <td class="tc">4/2</td>
-            <td class="tc">목</td>
-            <td class="tr">983,000</td>
-            <td class="tr">697,140</td>
-            <td class="tc mg-good">70.9%</td>
-          </tr><tr class="">
-            <td class="tc">4/3</td>
-            <td class="tc">금</td>
-            <td class="tr">1,137,000</td>
-            <td class="tr">612,100</td>
-            <td class="tc mg-mid">53.8%</td>
-          </tr><tr class="sat">
-            <td class="tc">4/4</td>
-            <td class="tc">토</td>
-            <td class="tr">429,000</td>
-            <td class="tr">302,400</td>
-            <td class="tc mg-good">70.5%</td>
-          </tr><tr class="sun">
-            <td class="tc">4/5</td>
-            <td class="tc">일</td>
-            <td class="tr">2,511,000</td>
-            <td class="tr">1,782,970</td>
-            <td class="tc mg-good">71.0%</td>
-          </tr><tr class="">
-            <td class="tc">4/6</td>
-            <td class="tc">월</td>
-            <td class="tr">1,200,100</td>
-            <td class="tr">745,895</td>
-            <td class="tc mg-mid">62.2%</td>
-          </tr><tr class="">
-            <td class="tc">4/7</td>
-            <td class="tc">화</td>
-            <td class="tr">424,500</td>
-            <td class="tr">314,000</td>
-            <td class="tc mg-good">74.0%</td>
-          </tr><tr class="">
-            <td class="tc">4/8</td>
-            <td class="tc">수</td>
-            <td class="tr">915,000</td>
-            <td class="tr">675,490</td>
-            <td class="tc mg-good">73.8%</td>
-          </tr><tr class="">
-            <td class="tc">4/9</td>
-            <td class="tc">목</td>
-            <td class="tr">1,008,000</td>
-            <td class="tr">601,830</td>
-            <td class="tc mg-mid">59.7%</td>
-          </tr><tr class="">
-            <td class="tc">4/10</td>
-            <td class="tc">금</td>
-            <td class="tr">672,000</td>
-            <td class="tr">431,680</td>
-            <td class="tc mg-mid">64.2%</td>
-          </tr><tr class="sat">
-            <td class="tc">4/11</td>
-            <td class="tc">토</td>
-            <td class="tr">1,033,000</td>
-            <td class="tr">826,635</td>
-            <td class="tc mg-good">80.0%</td>
-          </tr><tr class="sun">
-            <td class="tc">4/12</td>
-            <td class="tc">일</td>
-            <td class="tr">1,612,000</td>
-            <td class="tr">940,500</td>
-            <td class="tc mg-mid">58.3%</td>
-          </tr><tr class="">
-            <td class="tc">4/13</td>
-            <td class="tc">월</td>
-            <td class="tr">821,000</td>
-            <td class="tr">570,435</td>
-            <td class="tc mg-mid">69.5%</td>
-          </tr><tr class="">
-            <td class="tc">4/14</td>
-            <td class="tc">화</td>
-            <td class="tr">917,600</td>
-            <td class="tr">676,695</td>
-            <td class="tc mg-good">73.7%</td>
-          </tr><tr class="">
-            <td class="tc">4/15</td>
-            <td class="tc">수</td>
-            <td class="tr">725,000</td>
-            <td class="tr">491,175</td>
-            <td class="tc mg-mid">67.7%</td>
-          </tr><tr class="">
-            <td class="tc">4/16</td>
-            <td class="tc">목</td>
-            <td class="tr">1,834,000</td>
-            <td class="tr">1,262,625</td>
-            <td class="tc mg-mid">68.8%</td>
-          </tr><tr class="">
-            <td class="tc">4/17</td>
-            <td class="tc">금</td>
-            <td class="tr">435,000</td>
-            <td class="tr">324,500</td>
-            <td class="tc mg-good">74.6%</td>
-          </tr><tr class="sat">
-            <td class="tc">4/18</td>
-            <td class="tc">토</td>
-            <td class="tr">978,000</td>
-            <td class="tr">803,400</td>
-            <td class="tc mg-good">82.1%</td>
-          </tr><tr class="sun">
-            <td class="tc">4/19</td>
-            <td class="tc">일</td>
-            <td class="tr">1,052,500</td>
-            <td class="tr">726,835</td>
-            <td class="tc mg-mid">69.1%</td>
-          </tr><tr class="">
-            <td class="tc">4/20</td>
-            <td class="tc">월</td>
-            <td class="tr">973,000</td>
-            <td class="tr">670,850</td>
-            <td class="tc mg-mid">68.9%</td>
-          </tr><tr class="">
-            <td class="tc">4/21</td>
-            <td class="tc">화</td>
-            <td class="tr">323,500</td>
-            <td class="tr">236,000</td>
-            <td class="tc mg-good">73.0%</td>
-          </tr>
-        <tr class="bold-row">
-          <td class="tc" colspan="2">합계</td>
-          <td class="tr">20,407,200</td>
-          <td class="tr">13,962,380</td>
-          <td class="tc mg-mid">68.4%</td>
-        </tr>
-      </tbody>
-    </table></div>
+        <div class="tbl-wrap tbl-wrap-scroll" id="dailyTableWrap"></div>
       </div>
     </div>
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
-        <div class="tbl-wrap" id="catTableWrap">
-    <table>
-      <thead><tr><th class="tl">카테고리</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tc">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-      <tbody>
-        <tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2e72d2;margin-right:6px;vertical-align:middle;"></span>
-            ELECTRIC
-          </td>
-          <td class="tc">276</td>
-          <td class="tr">9,229,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:45.2%"></div></div>
-              <span>45.2%</span>
-            </div>
-          </td>
-          <td class="tr">6,860,500</td>
-          <td class="tc mg-good">74.3%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1e9e5b;margin-right:6px;vertical-align:middle;"></span>
-            LIVING
-          </td>
-          <td class="tc">90</td>
-          <td class="tr">3,062,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:15.0%"></div></div>
-              <span>15.0%</span>
-            </div>
-          </td>
-          <td class="tr">1,941,535</td>
-          <td class="tc mg-mid">63.4%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e07a2e;margin-right:6px;vertical-align:middle;"></span>
-            FURNITURE
-          </td>
-          <td class="tc">5</td>
-          <td class="tr">2,554,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:12.5%"></div></div>
-              <span>12.5%</span>
-            </div>
-          </td>
-          <td class="tr">1,486,000</td>
-          <td class="tc mg-mid">58.2%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9b59b6;margin-right:6px;vertical-align:middle;"></span>
-            GOODS
-          </td>
-          <td class="tc">109</td>
-          <td class="tr">2,109,200</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:10.3%"></div></div>
-              <span>10.3%</span>
-            </div>
-          </td>
-          <td class="tr">1,345,580</td>
-          <td class="tc mg-mid">63.8%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e05252;margin-right:6px;vertical-align:middle;"></span>
-            LIGHT
-          </td>
-          <td class="tc">4</td>
-          <td class="tr">1,330,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:6.5%"></div></div>
-              <span>6.5%</span>
-            </div>
-          </td>
-          <td class="tr">1,003,000</td>
-          <td class="tc mg-good">75.4%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1abc9c;margin-right:6px;vertical-align:middle;"></span>
-            POSTER
-          </td>
-          <td class="tc">23</td>
-          <td class="tr">1,115,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:5.5%"></div></div>
-              <span>5.5%</span>
-            </div>
-          </td>
-          <td class="tr">843,000</td>
-          <td class="tc mg-good">75.6%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f39c12;margin-right:6px;vertical-align:middle;"></span>
-            FASHION
-          </td>
-          <td class="tc">38</td>
-          <td class="tr">972,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:4.8%"></div></div>
-              <span>4.8%</span>
-            </div>
-          </td>
-          <td class="tr">479,765</td>
-          <td class="tc mg-low">49.4%</td>
-        </tr><tr>
-          <td class="tl">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#34495e;margin-right:6px;vertical-align:middle;"></span>
-            ETC
-          </td>
-          <td class="tc">12</td>
-          <td class="tr">36,000</td>
-          <td class="tc">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:0.2%"></div></div>
-              <span>0.2%</span>
-            </div>
-          </td>
-          <td class="tr">3,000</td>
-          <td class="tc mg-low">8.3%</td>
-        </tr>
-      </tbody>
-    </table></div>
+        <div class="tbl-wrap" id="catTableWrap"></div>
       </div>
     </div>
     <div class="sec">
       <div class="sec-title">🏆 카테고리별 상위 5개 상품</div>
-      <div class="cat-tabs" id="catTabs"><button class="cat-tab active" data-cat="ELECTRIC" onclick="switchCat('ELECTRIC')">ELECTRIC</button><button class="cat-tab " data-cat="GOODS" onclick="switchCat('GOODS')">GOODS</button><button class="cat-tab " data-cat="POSTER" onclick="switchCat('POSTER')">POSTER</button><button class="cat-tab " data-cat="LIVING" onclick="switchCat('LIVING')">LIVING</button><button class="cat-tab " data-cat="FURNITURE" onclick="switchCat('FURNITURE')">FURNITURE</button><button class="cat-tab " data-cat="FASHION" onclick="switchCat('FASHION')">FASHION</button><button class="cat-tab " data-cat="LIGHT" onclick="switchCat('LIGHT')">LIGHT</button><button class="cat-tab " data-cat="ETC" onclick="switchCat('ETC')">ETC</button></div>
-      <div id="catPanes">
-    <div class="cat-pane active" data-cat="ELECTRIC">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[플러그] 3C Multi Plug (블루/옐로우) / #5922</td>
-                <td class="tc">16</td>
-                <td class="tr">944,000</td>
-                <td class="tr">464,000</td>
-                <td class="tc mg-low">49.2%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">25</td>
-                <td class="tr">750,000</td>
-                <td class="tr">575,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">22</td>
-                <td class="tr">702,000</td>
-                <td class="tr">565,600</td>
-                <td class="tc mg-good">80.6%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">23</td>
-                <td class="tr">644,000</td>
-                <td class="tr">496,800</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[케이블] 케이블 링 CC (블루/그린) / #14199</td>
-                <td class="tc">17</td>
-                <td class="tr">624,000</td>
-                <td class="tr">518,600</td>
-                <td class="tc mg-good">83.1%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="GOODS">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[키링] Type2 - 15000 / #10585</td>
-                <td class="tc">24</td>
-                <td class="tr">360,000</td>
-                <td class="tr">252,000</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[키링] Type8 - 55000 / #40000</td>
-                <td class="tc">4</td>
-                <td class="tr">220,000</td>
-                <td class="tr">154,000</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[오르쏘] 익명의 건물 키링 - 스카이블루 / #14070</td>
-                <td class="tc">9</td>
-                <td class="tr">216,000</td>
-                <td class="tr">64,800</td>
-                <td class="tc mg-low">30.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[인형] Duracell Bunny (Globetrotter) / #10167</td>
-                <td class="tc">1</td>
-                <td class="tr">190,000</td>
-                <td class="tr">147,000</td>
-                <td class="tc mg-good">77.4%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[시계] Zentra Ticki Tack Clock (green) / #7804</td>
-                <td class="tc">1</td>
-                <td class="tr">145,000</td>
-                <td class="tr">101,500</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="POSTER">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[PB T&amp;J] Frame Poster_T&amp;J (A3) / #1389</td>
-                <td class="tc">15</td>
-                <td class="tr">600,000</td>
-                <td class="tr">585,000</td>
-                <td class="tc mg-good">97.5%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[포스터] POKEMON 1999 / #13147</td>
-                <td class="tc">1</td>
-                <td class="tr">203,000</td>
-                <td class="tr">153,000</td>
-                <td class="tc mg-good">75.4%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[포스터] Garfield 20*30mm (A4)</td>
-                <td class="tc">3</td>
-                <td class="tr">120,000</td>
-                <td class="tr">75,000</td>
-                <td class="tc mg-mid">62.5%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[포스터] Tennis &amp; Golf Poster / #10631</td>
-                <td class="tc">1</td>
-                <td class="tr">72,000</td>
-                <td class="tr">22,000</td>
-                <td class="tc mg-low">30.6%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[포스터] Monster Co. / #401</td>
-                <td class="tc">1</td>
-                <td class="tr">40,000</td>
-                <td class="tr">-10,000</td>
-                <td class="tc mg-low">-25.0%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="LIVING">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[HEE] Mirror - XL (오렌지) / #14104</td>
-                <td class="tc">6</td>
-                <td class="tr">360,000</td>
-                <td class="tr">272,400</td>
-                <td class="tc mg-good">75.7%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[HEE] Mirror - XL (그린) / #14103</td>
-                <td class="tc">5</td>
-                <td class="tr">300,000</td>
-                <td class="tr">227,000</td>
-                <td class="tc mg-good">75.7%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[시계] Swing Desk Clock(추) / #14442</td>
-                <td class="tc">2</td>
-                <td class="tr">260,000</td>
-                <td class="tr">184,000</td>
-                <td class="tc mg-good">70.8%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[AMVEL] Pentagon 72 (Ice Blue) / #14440</td>
-                <td class="tc">3</td>
-                <td class="tr">168,000</td>
-                <td class="tr">58,800</td>
-                <td class="tc mg-low">35.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
-                <td class="tr">147,000</td>
-                <td class="tr">123,000</td>
-                <td class="tc mg-good">83.7%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="FURNITURE">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[의자]Herman Miller Alu Chair( EA105) / #4783</td>
-                <td class="tc">1</td>
-                <td class="tr">850,000</td>
-                <td class="tr">595,000</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[거울] 수퍼 튜브 미러 - L (베이비핑크) B급 / #12325</td>
-                <td class="tc">1</td>
-                <td class="tr">615,000</td>
-                <td class="tr">255,000</td>
-                <td class="tc mg-low">41.5%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[SOLDIDESIGN] Ovetto Abs Trash Can (white-blue) / #12015</td>
-                <td class="tc">1</td>
-                <td class="tr">540,000</td>
-                <td class="tr">250,000</td>
-                <td class="tc mg-low">46.3%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[의자] Blue Seat Teak Stacking Chair / #8177</td>
-                <td class="tc">1</td>
-                <td class="tr">310,000</td>
-                <td class="tr">217,000</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[트롤리] AT HOME TROLLY (실버/화이트) / #13533</td>
-                <td class="tc">1</td>
-                <td class="tr">239,000</td>
-                <td class="tr">169,000</td>
-                <td class="tc mg-good">70.7%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="FASHION">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[삭스어필] 블럭 (네온) / #11755</td>
-                <td class="tc">9</td>
-                <td class="tr">98,000</td>
-                <td class="tr">62,315</td>
-                <td class="tc mg-mid">63.6%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[SITUS] Minimalist Wallet PVC - Clear Purple#14122</td>
-                <td class="tc">1</td>
-                <td class="tr">89,000</td>
-                <td class="tr">36,640</td>
-                <td class="tc mg-low">41.2%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[SITUS] Minimalist Wallet PVC - Clear / #14123</td>
-                <td class="tc">1</td>
-                <td class="tr">89,000</td>
-                <td class="tr">36,640</td>
-                <td class="tc mg-low">41.2%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">4</span></td>
-                <td class="tl">[SITUS] Minimalist Wallet Tyvek® - Gray / #14113</td>
-                <td class="tc">1</td>
-                <td class="tr">84,000</td>
-                <td class="tr">35,490</td>
-                <td class="tc mg-low">42.3%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">5</span></td>
-                <td class="tl">[EMS] Caffè Latte / #10462</td>
-                <td class="tc">2</td>
-                <td class="tr">58,000</td>
-                <td class="tr">33,780</td>
-                <td class="tc mg-mid">58.2%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="LIGHT">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">[조명] SUPER MOON (화이트) / #12549</td>
-                <td class="tc">2</td>
-                <td class="tr">560,000</td>
-                <td class="tr">440,000</td>
-                <td class="tc mg-good">78.6%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[조명] Mitasi 28 Notte/artemide / #12448</td>
-                <td class="tc">1</td>
-                <td class="tr">490,000</td>
-                <td class="tr">343,000</td>
-                <td class="tc mg-good">70.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">3</span></td>
-                <td class="tl">[조명] SUPER MOON (그린) / #2151</td>
-                <td class="tc">1</td>
-                <td class="tr">280,000</td>
-                <td class="tr">220,000</td>
-                <td class="tc mg-good">78.6%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="cat-pane " data-cat="ETC">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
-          <tbody>
-            <tr>
-                <td class="tc"><span class="rank-badge">1</span></td>
-                <td class="tl">택배비</td>
-                <td class="tc">10</td>
-                <td class="tr">30,000</td>
-                <td class="tr">0</td>
-                <td class="tc ">0.0%</td>
-              </tr><tr>
-                <td class="tc"><span class="rank-badge">2</span></td>
-                <td class="tl">[기타] 배송비 / #14313</td>
-                <td class="tc">2</td>
-                <td class="tr">6,000</td>
-                <td class="tr">3,000</td>
-                <td class="tc mg-mid">50.0%</td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </div></div>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div id="catPanes"></div>
     </div>
     <!-- 온라인 플랫폼별 매출 -->
-    <div class="sec" id="onlineSection" style="display: block;">
+    <div class="sec" id="onlineSection" style="display:none">
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" width="1320" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 660px;"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart"></canvas></div>
         </div>
-        <div class="tbl-wrap" id="onlineTableWrap">
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
-      ✅ <strong>결제 시각 매칭으로 온라인 매출 정확히 분리</strong> &nbsp;|&nbsp; 원가 마진율 71.8% (온라인 실제 기준) · 순마진 = 원가마진 × (1 − 수수료율)
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th class="tl">플랫폼</th>
-          <th class="tr">매출액</th>
-          <th class="tc">전체 매출 비중</th>
-          <th class="tc" style="color:#ffcc80;">원가 마진율</th>
-          <th class="tc" style="color:#ff8a80;">수수료율</th>
-          <th class="tc" style="color:#80cbc4;">순 마진율</th>
-          <th class="tr">순 마진액</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1a1a2e;margin-right:6px;vertical-align:middle;"></span>
-              29cm
-            </td>
-            <td class="tr">232,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.6%;background:#1a1a2e;"></div></div>
-                <span>0.6%</span>
-              </div>
-            </td>
-            <td class="tc" style="color:var(--muted);">54.3%</td>
-            <td class="tc" style="color:var(--red);">−11.8%</td>
-            <td class="tc mg-low">42.5%</td>
-            <td class="tr">98,600</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#03c75a;margin-right:6px;vertical-align:middle;"></span>
-              네이버 스마트스토어
-            </td>
-            <td class="tr">246,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.7%;background:#03c75a;"></div></div>
-                <span>0.7%</span>
-              </div>
-            </td>
-            <td class="tc" style="color:var(--muted);">79.8%</td>
-            <td class="tc" style="color:var(--red);">−6.0%</td>
-            <td class="tc mg-good">73.8%</td>
-            <td class="tr">181,540</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#50c878;margin-right:6px;vertical-align:middle;"></span>
-              오늘의 집
-            </td>
-            <td class="tr">167,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.4%;background:#50c878;"></div></div>
-                <span>0.4%</span>
-              </div>
-            </td>
-            <td class="tc" style="color:var(--muted);">83.7%</td>
-            <td class="tc" style="color:var(--red);">−15.0%</td>
-            <td class="tc mg-mid">68.7%</td>
-            <td class="tr">114,750</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ff6b35;margin-right:6px;vertical-align:middle;"></span>
-              카페24
-            </td>
-            <td class="tr">236,000</td>
-            <td class="tc">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.6%;background:#ff6b35;"></div></div>
-                <span>0.6%</span>
-              </div>
-            </td>
-            <td class="tc" style="color:var(--muted);">72.2%</td>
-            <td class="tc" style="color:var(--red);">−3.5%</td>
-            <td class="tc mg-mid">68.7%</td>
-            <td class="tr">162,220</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ffcd00;margin-right:6px;vertical-align:middle;"></span>
-              카카오선물하기
-            </td>
-            <td class="tr">-</td>
-            <td class="tc">
-              -
-            </td>
-            <td class="tc" style="color:var(--muted);">-</td>
-            <td class="tc" style="color:var(--red);">-</td>
-            <td class="tc ">-</td>
-            <td class="tr">-</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e84060;margin-right:6px;vertical-align:middle;"></span>
-              현대 M포인트몰
-            </td>
-            <td class="tr">-</td>
-            <td class="tc">
-              -
-            </td>
-            <td class="tc" style="color:var(--muted);">-</td>
-            <td class="tc" style="color:var(--red);">-</td>
-            <td class="tc ">-</td>
-            <td class="tr">-</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7b5ea7;margin-right:6px;vertical-align:middle;"></span>
-              아난티몰
-            </td>
-            <td class="tr">-</td>
-            <td class="tc">
-              -
-            </td>
-            <td class="tc" style="color:var(--muted);">-</td>
-            <td class="tc" style="color:var(--red);">-</td>
-            <td class="tc ">-</td>
-            <td class="tr">-</td>
-          </tr><tr>
-            <td class="tl">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0064ff;margin-right:6px;vertical-align:middle;"></span>
-              토스 쇼핑
-            </td>
-            <td class="tr">-</td>
-            <td class="tc">
-              -
-            </td>
-            <td class="tc" style="color:var(--muted);">-</td>
-            <td class="tc" style="color:var(--red);">-</td>
-            <td class="tc ">-</td>
-            <td class="tr">-</td>
-          </tr>
-        <tr class="bold-row">
-          <td class="tl">온라인 합계</td>
-          <td class="tr">881,000</td>
-          <td class="tc">2.3%</td>
-          <td class="tc">-</td>
-          <td class="tc">-</td>
-          <td class="tc mg-mid">63.2%</td>
-          <td class="tr">557,110</td>
-        </tr>
-      </tbody>
-    </table></div>
+        <div class="tbl-wrap" id="onlineTableWrap"></div>
       </div>
     </div>
     <!-- 온라인 판매 품목 -->
-    <div class="sec" id="onlineItemSection" style="display: block;">
+    <div class="sec" id="onlineItemSection" style="display:none">
       <div class="sec-title">🛒 온라인 판매 품목</div>
-      <div class="cat-tabs" id="onlineItemTabs"><button class="cat-tab active" data-ptab="전체" onclick="switchOnlineTab('전체')">전체</button><button class="cat-tab " data-ptab="네이버 스마트스토어" onclick="switchOnlineTab('네이버 스마트스토어')">네이버 스마트스토어</button><button class="cat-tab " data-ptab="카페24" onclick="switchOnlineTab('카페24')">카페24</button><button class="cat-tab " data-ptab="29cm" onclick="switchOnlineTab('29cm')">29cm</button><button class="cat-tab " data-ptab="오늘의 집" onclick="switchOnlineTab('오늘의 집')">오늘의 집</button></div>
-      <div id="onlineItemPanes"><div class="cat-pane active" data-ptab="전체">
-      <div class="tbl-wrap tbl-wrap-scroll">
-        <table>
-          <thead><tr>
-            <th class="tl">플랫폼</th>
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
-            <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
-            <th class="tc">마진율</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
-                <td class="tr">147,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:16.7%;"></div></div>
-                    <span style="min-width:32px;">16.7%</span>
-                  </div>
-                </td>
-                <td class="tr">123,000</td>
-                <td class="tc mg-good">83.7%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">2</td>
-                <td class="tr">60,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.8%;"></div></div>
-                    <span style="min-width:32px;">6.8%</span>
-                  </div>
-                </td>
-                <td class="tr">46,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[HEE] 소프트 CC (그레이/오렌지) / #13981</td>
-                <td class="tc">1</td>
-                <td class="tr">50,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.7%;"></div></div>
-                    <span style="min-width:32px;">5.7%</span>
-                  </div>
-                </td>
-                <td class="tr">39,700</td>
-                <td class="tc mg-good">79.4%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 롤 (스트라이프-블루) / #13714</td>
-                <td class="tc">1</td>
-                <td class="tr">49,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.6%;"></div></div>
-                    <span style="min-width:32px;">5.6%</span>
-                  </div>
-                </td>
-                <td class="tr">41,000</td>
-                <td class="tc mg-good">83.7%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - L (white) / #10986</td>
-                <td class="tc">1</td>
-                <td class="tr">46,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:5.2%;"></div></div>
-                    <span style="min-width:32px;">5.2%</span>
-                  </div>
-                </td>
-                <td class="tr">18,400</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">FASHION</td>
-                <td class="tl">[SALLIES] Pocket Pal (그린) / #13675</td>
-                <td class="tc">1</td>
-                <td class="tr">42,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:4.8%;"></div></div>
-                    <span style="min-width:32px;">4.8%</span>
-                  </div>
-                </td>
-                <td class="tr">21,400</td>
-                <td class="tc mg-mid">51.0%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">1</td>
-                <td class="tr">39,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:4.4%;"></div></div>
-                    <span style="min-width:32px;">4.4%</span>
-                  </div>
-                </td>
-                <td class="tr">32,800</td>
-                <td class="tc mg-good">84.1%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - S (green) / #10989</td>
-                <td class="tc">1</td>
-                <td class="tr">33,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.7%;"></div></div>
-                    <span style="min-width:32px;">3.7%</span>
-                  </div>
-                </td>
-                <td class="tr">13,200</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - S (yellow) / #10990</td>
-                <td class="tc">1</td>
-                <td class="tr">33,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.7%;"></div></div>
-                    <span style="min-width:32px;">3.7%</span>
-                  </div>
-                </td>
-                <td class="tr">13,200</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
-                <td class="tl">[가방] 슈퍼 플렉스 백 / #14155</td>
-                <td class="tc">1</td>
-                <td class="tr">32,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.6%;"></div></div>
-                    <span style="min-width:32px;">3.6%</span>
-                  </div>
-                </td>
-                <td class="tr">24,500</td>
-                <td class="tc mg-good">76.6%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">1</td>
-                <td class="tr">30,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.4%;"></div></div>
-                    <span style="min-width:32px;">3.4%</span>
-                  </div>
-                </td>
-                <td class="tr">23,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (오렌지) / #14211</td>
-                <td class="tc">1</td>
-                <td class="tr">30,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.4%;"></div></div>
-                    <span style="min-width:32px;">3.4%</span>
-                  </div>
-                </td>
-                <td class="tr">23,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
-                <td class="tl">[EMS] Choco Cream / #13472</td>
-                <td class="tc">1</td>
-                <td class="tr">29,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.3%;"></div></div>
-                    <span style="min-width:32px;">3.3%</span>
-                  </div>
-                </td>
-                <td class="tr">16,890</td>
-                <td class="tc mg-mid">58.2%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">FASHION</td>
-                <td class="tl">[EMS] Soy Fish / #10386</td>
-                <td class="tc">1</td>
-                <td class="tr">29,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.3%;"></div></div>
-                    <span style="min-width:32px;">3.3%</span>
-                  </div>
-                </td>
-                <td class="tr">16,890</td>
-                <td class="tc mg-mid">58.2%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (핑크/옐로우) / #12913</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
-                    <span style="min-width:32px;">3.2%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ff6b35;margin-right:5px;vertical-align:middle;"></span>카페24</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (스카이블루/그린) / #13742</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
-                    <span style="min-width:32px;">3.2%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (그레이/스카이블루) / #13746</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
-                    <span style="min-width:32px;">3.2%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:3.2%;"></div></div>
-                    <span style="min-width:32px;">3.2%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (클리어/실버) / #14204</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
-                    <span style="min-width:32px;">2.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1a1a2e;margin-right:5px;vertical-align:middle;"></span>29cm</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (스카이블루/그린) / #13740</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
-                    <span style="min-width:32px;">2.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (그레이/스카이블루) / #13748</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
-                    <span style="min-width:32px;">2.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#03c75a;margin-right:5px;vertical-align:middle;"></span>네이버 스마트스토어</td>
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (핑크/옐로우) / #14205</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:2.8%;"></div></div>
-                    <span style="min-width:32px;">2.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 데코 (그리드-테라코타1) / #13120</td>
-                <td class="tc">2</td>
-                <td class="tr">10,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:1.1%;"></div></div>
-                    <span style="min-width:32px;">1.1%</span>
-                  </div>
-                </td>
-                <td class="tr">8,400</td>
-                <td class="tc mg-good">84.0%</td>
-              </tr><tr>
-                <td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#50c878;margin-right:5px;vertical-align:middle;"></span>오늘의 집</td>
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 데코 (그리드-테라코타 믹스) / #13114</td>
-                <td class="tc">2</td>
-                <td class="tr">10,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:1.1%;"></div></div>
-                    <span style="min-width:32px;">1.1%</span>
-                  </div>
-                </td>
-                <td class="tr">8,400</td>
-                <td class="tc mg-good">84.0%</td>
-              </tr>
-            <tr class="bold-row">
-              <td></td>
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">29</td>
-              <td class="tr">881,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">632,580</td>
-              <td class="tc mg-good">71.8%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div><div class="cat-pane " data-ptab="네이버 스마트스토어">
-      <div class="tbl-wrap tbl-wrap-scroll">
-        <table>
-          <thead><tr>
-            
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
-            <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
-            <th class="tc">마진율</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[HEE] 소프트 CC (그레이/오렌지) / #13981</td>
-                <td class="tc">1</td>
-                <td class="tr">50,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:20.3%;"></div></div>
-                    <span style="min-width:32px;">20.3%</span>
-                  </div>
-                </td>
-                <td class="tr">39,700</td>
-                <td class="tc mg-good">79.4%</td>
-              </tr><tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 롤 (스트라이프-블루) / #13714</td>
-                <td class="tc">1</td>
-                <td class="tr">49,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:19.9%;"></div></div>
-                    <span style="min-width:32px;">19.9%</span>
-                  </div>
-                </td>
-                <td class="tr">41,000</td>
-                <td class="tc mg-good">83.7%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 케이블링 CC (그린/오렌지) / #14317</td>
-                <td class="tc">1</td>
-                <td class="tr">39,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:15.9%;"></div></div>
-                    <span style="min-width:32px;">15.9%</span>
-                  </div>
-                </td>
-                <td class="tr">32,800</td>
-                <td class="tc mg-good">84.1%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">1</td>
-                <td class="tr">30,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.2%;"></div></div>
-                    <span style="min-width:32px;">12.2%</span>
-                  </div>
-                </td>
-                <td class="tr">23,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (블루) / #13550</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.4%;"></div></div>
-                    <span style="min-width:32px;">11.4%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (그레이/스카이블루) / #13748</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.2%;"></div></div>
-                    <span style="min-width:32px;">10.2%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (핑크/옐로우) / #14205</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.2%;"></div></div>
-                    <span style="min-width:32px;">10.2%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr>
-            <tr class="bold-row">
-              
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
-              <td class="tr">246,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">196,300</td>
-              <td class="tc mg-good">79.8%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div><div class="cat-pane " data-ptab="카페24">
-      <div class="tbl-wrap tbl-wrap-scroll">
-        <table>
-          <thead><tr>
-            
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
-            <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
-            <th class="tc">마진율</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (클리어/실버) / #14212</td>
-                <td class="tc">2</td>
-                <td class="tr">60,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:25.4%;"></div></div>
-                    <span style="min-width:32px;">25.4%</span>
-                  </div>
-                </td>
-                <td class="tr">46,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                
-                <td class="tl">FASHION</td>
-                <td class="tl">[가방] 슈퍼 플렉스 백 / #14155</td>
-                <td class="tc">1</td>
-                <td class="tr">32,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:13.6%;"></div></div>
-                    <span style="min-width:32px;">13.6%</span>
-                  </div>
-                </td>
-                <td class="tr">24,500</td>
-                <td class="tc mg-good">76.6%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC 2m (오렌지) / #14211</td>
-                <td class="tc">1</td>
-                <td class="tr">30,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.7%;"></div></div>
-                    <span style="min-width:32px;">12.7%</span>
-                  </div>
-                </td>
-                <td class="tr">23,000</td>
-                <td class="tc mg-good">76.7%</td>
-              </tr><tr>
-                
-                <td class="tl">FASHION</td>
-                <td class="tl">[EMS] Choco Cream / #13472</td>
-                <td class="tc">1</td>
-                <td class="tr">29,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.3%;"></div></div>
-                    <span style="min-width:32px;">12.3%</span>
-                  </div>
-                </td>
-                <td class="tr">16,890</td>
-                <td class="tc mg-mid">58.2%</td>
-              </tr><tr>
-                
-                <td class="tl">FASHION</td>
-                <td class="tl">[EMS] Soy Fish / #10386</td>
-                <td class="tc">1</td>
-                <td class="tr">29,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.3%;"></div></div>
-                    <span style="min-width:32px;">12.3%</span>
-                  </div>
-                </td>
-                <td class="tr">16,890</td>
-                <td class="tc mg-mid">58.2%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (핑크/옐로우) / #12913</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.9%;"></div></div>
-                    <span style="min-width:32px;">11.9%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (스카이블루/그린) / #13742</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:11.9%;"></div></div>
-                    <span style="min-width:32px;">11.9%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr>
-            <tr class="bold-row">
-              
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">8</td>
-              <td class="tr">236,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">170,480</td>
-              <td class="tc mg-good">72.2%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div><div class="cat-pane " data-ptab="29cm">
-      <div class="tbl-wrap tbl-wrap-scroll">
-        <table>
-          <thead><tr>
-            
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
-            <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
-            <th class="tc">마진율</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - L (white) / #10986</td>
-                <td class="tc">1</td>
-                <td class="tr">46,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:19.8%;"></div></div>
-                    <span style="min-width:32px;">19.8%</span>
-                  </div>
-                </td>
-                <td class="tr">18,400</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                
-                <td class="tl">FASHION</td>
-                <td class="tl">[SALLIES] Pocket Pal (그린) / #13675</td>
-                <td class="tc">1</td>
-                <td class="tr">42,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:18.1%;"></div></div>
-                    <span style="min-width:32px;">18.1%</span>
-                  </div>
-                </td>
-                <td class="tr">21,400</td>
-                <td class="tc mg-mid">51.0%</td>
-              </tr><tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - S (green) / #10989</td>
-                <td class="tc">1</td>
-                <td class="tr">33,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:14.2%;"></div></div>
-                    <span style="min-width:32px;">14.2%</span>
-                  </div>
-                </td>
-                <td class="tr">13,200</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[TETTET] Pot - S (yellow) / #10990</td>
-                <td class="tc">1</td>
-                <td class="tr">33,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:14.2%;"></div></div>
-                    <span style="min-width:32px;">14.2%</span>
-                  </div>
-                </td>
-                <td class="tr">13,200</td>
-                <td class="tc mg-low">40.0%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 스파이럴 CC (그레이/스카이블루) / #13746</td>
-                <td class="tc">1</td>
-                <td class="tr">28,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:12.1%;"></div></div>
-                    <span style="min-width:32px;">12.1%</span>
-                  </div>
-                </td>
-                <td class="tr">21,600</td>
-                <td class="tc mg-good">77.1%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (클리어/실버) / #14204</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.8%;"></div></div>
-                    <span style="min-width:32px;">10.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr><tr>
-                
-                <td class="tl">ELECTRIC</td>
-                <td class="tl">[케이블] 소프트 CC (스카이블루/그린) / #13740</td>
-                <td class="tc">1</td>
-                <td class="tr">25,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:10.8%;"></div></div>
-                    <span style="min-width:32px;">10.8%</span>
-                  </div>
-                </td>
-                <td class="tr">19,100</td>
-                <td class="tc mg-good">76.4%</td>
-              </tr>
-            <tr class="bold-row">
-              
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
-              <td class="tr">232,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">126,000</td>
-              <td class="tc mg-mid">54.3%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div><div class="cat-pane " data-ptab="오늘의 집">
-      <div class="tbl-wrap tbl-wrap-scroll">
-        <table>
-          <thead><tr>
-            
-            <th class="tl">카테고리</th>
-            <th class="tl" style="min-width:200px;">상품명</th>
-            <th class="tc">수량</th>
-            <th class="tr">매출액</th>
-            <th class="tc">비중</th>
-            <th class="tr">마진액</th>
-            <th class="tc">마진율</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 롤 (그리드-블루2) / #13127</td>
-                <td class="tc">3</td>
-                <td class="tr">147,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:88.0%;"></div></div>
-                    <span style="min-width:32px;">88.0%</span>
-                  </div>
-                </td>
-                <td class="tr">123,000</td>
-                <td class="tc mg-good">83.7%</td>
-              </tr><tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 데코 (그리드-테라코타1) / #13120</td>
-                <td class="tc">2</td>
-                <td class="tr">10,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.0%;"></div></div>
-                    <span style="min-width:32px;">6.0%</span>
-                  </div>
-                </td>
-                <td class="tr">8,400</td>
-                <td class="tc mg-good">84.0%</td>
-              </tr><tr>
-                
-                <td class="tl">LIVING</td>
-                <td class="tl">[페이퍼] 데코 (그리드-테라코타 믹스) / #13114</td>
-                <td class="tc">2</td>
-                <td class="tr">10,000</td>
-                <td class="tc">
-                  <div style="display:flex;align-items:center;gap:5px;">
-                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:6.0%;"></div></div>
-                    <span style="min-width:32px;">6.0%</span>
-                  </div>
-                </td>
-                <td class="tr">8,400</td>
-                <td class="tc mg-good">84.0%</td>
-              </tr>
-            <tr class="bold-row">
-              
-              <td colspan="2" class="tl">합계</td>
-              <td class="tc">7</td>
-              <td class="tr">167,000</td>
-              <td class="tc">100%</td>
-              <td class="tr">139,800</td>
-              <td class="tc mg-good">83.7%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div></div>
+      <div class="cat-tabs" id="onlineItemTabs"></div>
+      <div id="onlineItemPanes"></div>
     </div>
-    <div class="sec" id="b2bSection" style="display: block;">
+    <div class="sec" id="b2bSection" style="display:none">
       <div class="sec-title">🤝 B2B / 외부 매출</div>
-      <div class="tbl-wrap" id="b2bTableWrap">
-    <table>
-      <thead><tr><th class="tc">날짜</th><th class="tl">카테고리</th><th class="tl">업체</th><th class="tc">수량</th><th class="tr">금액</th><th class="tr">마진</th><th class="tl">비고</th></tr></thead>
-      <tbody>
-        <tr>
-            <td class="tc">4.1</td>
-            <td class="tl">B2B 판매</td>
-            <td class="tl">블루오렌지 (대만)</td>
-            <td class="tc">107</td>
-            <td class="tr">1,913,100</td>
-            <td class="tr">1,266,600</td>
-            <td class="tl" style="white-space:normal;max-width:260px;font-size:11px;color:#555;">0.6620668026</td>
-          </tr><tr>
-            <td class="tc">4.6</td>
-            <td class="tl">B2B 판매</td>
-            <td class="tl">비오드</td>
-            <td class="tc">15</td>
-            <td class="tr">1,261,400</td>
-            <td class="tr">952,260</td>
-            <td class="tl" style="white-space:normal;max-width:260px;font-size:11px;color:#555;">0.7549231013</td>
-          </tr><tr>
-            <td class="tc">4.8</td>
-            <td class="tl">B2B 판매</td>
-            <td class="tl">당가여 (대만)</td>
-            <td class="tc">50</td>
-            <td class="tr">997,500</td>
-            <td class="tr">635,500</td>
-            <td class="tl" style="white-space:normal;max-width:260px;font-size:11px;color:#555;">0.6370927318</td>
-          </tr><tr>
-            <td class="tc">4.3</td>
-            <td class="tl">프로젝트</td>
-            <td class="tl">스타쉽 엔터테인먼트</td>
-            <td class="tc">2,200</td>
-            <td class="tr">13,200,000</td>
-            <td class="tr">7,560,000</td>
-            <td class="tl" style="white-space:normal;max-width:260px;font-size:11px;color:#555;">0.57</td>
-          </tr>
-      </tbody>
-    </table></div>
+      <div class="tbl-wrap" id="b2bTableWrap"></div>
     </div>
   </div>
+</div>
 
+<script>
+const DAYS = ['일','월','화','수','목','금','토'];
+const CAT_COLORS = ['#2e72d2','#1e9e5b','#e07a2e','#9b59b6','#e05252','#1abc9c','#f39c12','#34495e','#e91e63','#00bcd4'];
+
+// ─── FILE INPUT ───
+const fileInput = document.getElementById('fileInput');
+const uploadBox = document.getElementById('uploadBox');
+
+uploadBox.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+uploadBox.addEventListener('dragover', e => { e.preventDefault(); uploadBox.classList.add('dragover'); });
+uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('dragover'));
+uploadBox.addEventListener('drop', e => {
+  e.preventDefault(); uploadBox.classList.remove('dragover');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+let dailyChartInst  = null;
+let catChartInst    = null;
+let onlineChartInst = null;
+let mixChartInst    = null;
+
+const PLATFORMS = ['29cm', '네이버 스마트스토어', '오늘의 집', '카페24', '카카오선물하기', '현대 M포인트몰', '아난티몰', '토스 쇼핑'];
+const PLATFORM_COLORS = ['#1a1a2e', '#03c75a', '#50c878', '#ff6b35', '#ffcd00', '#e84060', '#7b5ea7', '#0064ff'];
+// 플랫폼별 기본 수수료율 (상품별 맵에 없을 때 폴백)
+// 29cm: 10% | 네이버 스마트스토어: 6% | 오늘의집: 15% | 카페24: 3.5% | 카카오선물하기: 15% | 현대 M포인트몰: 15% | 아난티몰: 15% | 토스 쇼핑: 5%
+const PLATFORM_FEE = { '29cm': 0.10, '네이버 스마트스토어': 0.06, '오늘의 집': 0.15, '카페24': 0.035, '카카오선물하기': 0.15, '현대 M포인트몰': 0.15, '아난티몰': 0.15, '토스 쇼핑': 0.05 };
+
+// ─── 상품별 수수료율 맵 (온라인 입점 리스트 기준) ───
+const PRODUCT_FEE_MAP = {"29cm":{"[VOLLID] POOP Long Sleeve tee, SMOKING":0.1,"[시계] Zentra Ticki Tack Clock (green)":0.1,"[트롤리] AT HOME TROLLY (실버/화이트)":0.1,"[케이블] 케이블링 CC (그린/오렌지)":0.1,"[케이블] 케이블링 CC (핑크/네온그린)":0.1,"[케이블] 케이블 링 CC (블루/그린)":0.1,"[케이블] 소프트 CC 2m (화이트)":0.1,"[케이블] 소프트 CC 2m (클리어/실버)":0.1,"[케이블] 소프트 CC 2m (오렌지)":0.1,"[케이블] 소프트 CC 2m (스카이블루)":0.1,"[케이블] 소프트 CC 2m (블랙)":0.1,"[HOME ECONOMICS EXPERIMENT] Super Tube Mirror (5options)":0.1,"[HEE] Mirror - XS (화이트)":0.1,"[HEE] Mirror - XS (그린)":0.1,"[HEE] Mirror - XL (화이트)":0.1,"[HEE] Mirror - XL (오렌지)":0.1,"[HEE] Mirror - XL (그린)":0.1,"[HEE] 소프트 CC (그레이/오렌지)":0.1,"[HEE] 스파이럴 CC (블랙/그린)":0.1,"[오르쏘] 실외기 뱃지 - 화이트 (2개 SET)":0.2,"[오르쏘] 익명의 건물 키링 - 스카이블루":0.2,"[오르쏘] 익명의 건물 키링 - 화이트":0.2,"[가방] 슈퍼 플렉스 백":0.1,"[SALLIES] Pocket Pal (블루)":0.2,"[SALLIES] Pocket Pal (그린)":0.2,"[SALLIES] Pocket Pal (핑크)":0.2,"[SALLIES] Pocket Pal (클리어)":0.2,"[SALLIES] Pocket Pal (오렌지)":0.2,"[SALLIES] Pocket Pal (브라운)":0.2,"[SALLIES] Pocket Pal (블랙)":0.2,"[SALLIES] Pocket Pal (도트-실버/블랙)":0.2,"[SALLIES] Pocket Pal (체커 - 실버/블랙)":0.2,"[SALLIES] Pocket Pal (체커2 - 그린)":0.2,"[SALLIES] Pocket Pal (체커2-옐로우)":0.2,"[SALLIES] Pocket Pal (체커2 - 블랙)":0.2,"[SITUS] Bicolor Wallet Tyvek® - Silver×Bright Pink":0.2,"[SITUS] Bicolor Wallet Tyvek® - Silver×Cobalt Blue":0.2,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Green":0.2,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Orange#14119":0.2,"[SITUS] Minimalist Wallet Tyvek® - Gray":0.2,"[SITUS] Minimalist Wallet Tyvek® - Black":0.2,"[SITUS] Minimalist Wallet Tyvek® - Ivy Green":0.2,"[SITUS] Minimalist Wallet Tyvek® - Beige":0.2,"[SITUS] Minimalist Wallet Tyvek® - Silver":0.2,"[SITUS] Minimalist Wallet PVC - Clear":0.2,"[SITUS] Minimalist Wallet PVC - Clear Purple#14122":0.2,"[SITUS] Minimalist Wallet PVC - Kohaku":0.2,"[SITUS] Minimalist Wallet PVC - Ocean":0.2,"[SITUS] Short Slim Card Case Tyvek® - Black":0.2,"[SITUS] Short Slim Card Case Tyvek® - Silver":0.2,"[SITUS] Short Slim Wallet Tyvek® - Black":0.2,"[SITUS] Short Slim Wallet Tyvek® - Silver":0.2,"[SITUS] Micro Wallet Tyvek® - Black":0.2,"[SITUS] Micro Wallet Tyvek® - Silver":0.2,"[케이블] 스파이럴 CC (그레이/스카이블루)":0.1,"[케이블] 스파이럴 CC (그린/오렌지)":0.1,"[케이블] 스파이럴 CC (블루)":0.1,"[케이블] 스파이럴 CC (스카이블루/그린)":0.1,"[케이블] 스파이럴 CC (옐로우)":0.1,"[케이블] 스파이럴 CC (핑크/옐로우)":0.1,"[케이블] 소프트 CC (그레이/스카이블루)":0.1,"[케이블] 소프트 CC (그린/오렌지)":0.1,"[케이블] 소프트 CC (블루/그린)":0.1,"[케이블] 소프트 CC (스카이블루/그린)":0.1,"[케이블] 소프트 CC (클리어/실버)":0.1,"[케이블] 소프트 CC (핑크/옐로우)":0.1,"[케이블] 소프트 CL (그레이/스카이블루)":0.1,"[케이블] 소프트 CL (그레이/옐로우)":0.1,"[케이블] 소프트 CL (그린/오렌지)":0.1,"[케이블] 소프트 CL (스카이블루/그린)":0.1,"[굿즈] 메모블럭 (블랙)":0.1,"[굿즈] 메모블럭 (블루)":0.1,"[테이블] Bauhaus Side Table (실버)":0.1,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-green)":0.16,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-black)":0.16,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-yellow)":0.16,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-blue)":0.16,"[SOLDIDESIGN] Ovetto Abs (mix)":0.16,"[테이블] 3 Stage Table (실버)":0.16,"[TETTET] Pot - L (green)":0.1,"[TETTET] Pot - L (red)":0.1,"[TETTET] Pot - L (white)":0.1,"[TETTET] Pot - L (yellow)":0.1,"[TETTET] Pot - S (green)":0.1,"[TETTET] Pot - S (red)":0.1,"[TETTET] Pot - S (white)":0.1,"[TETTET] Pot - S (yellow)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (그린)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (실버)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (화이트)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (그린)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (실버)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (화이트)":0.1,"[거울] 수퍼 튜브 미러 - L (그린)":0.1,"[거울] 수퍼 튜브 미러 - L (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - L (블랙)":0.1,"[거울] 수퍼 튜브 미러 - L (실버)":0.1,"[거울] 수퍼 튜브 미러 - L (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - L (화이트)":0.1,"[거울] 수퍼 튜브 미러 - S (그린)":0.1,"[거울] 수퍼 튜브 미러 - S (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - S (실버)":0.1,"[거울] 수퍼 튜브 미러 - S (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - S (화이트)":0.1},"카카오선물하기":{"[SALLIES] Pocket Pal (블루)":0.15,"[SALLIES] Pocket Pal (그린)":0.15,"[SALLIES] Pocket Pal (핑크)":0.15,"[SALLIES] Pocket Pal (클리어)":0.15,"[SALLIES] Pocket Pal (오렌지)":0.15,"[SALLIES] Pocket Pal (브라운)":0.15,"[SALLIES] Pocket Pal (블랙)":0.15,"[케이블] 스파이럴 CC (그레이/스카이블루)":0.15,"[케이블] 스파이럴 CC (그린/오렌지)":0.15,"[케이블] 스파이럴 CC (블루)":0.15,"[케이블] 스파이럴 CC (스카이블루/그린)":0.15,"[케이블] 스파이럴 CC (옐로우)":0.15,"[케이블] 스파이럴 CC (핑크/옐로우)":0.15,"[케이블] 소프트 CC (그레이/스카이블루)":0.15,"[케이블] 소프트 CC (그린/오렌지)":0.15,"[케이블] 소프트 CC (블루/그린)":0.15,"[케이블] 소프트 CC (스카이블루/그린)":0.15,"[케이블] 소프트 CL (스카이블루/그린)":0.15,"[케이블] 소프트 CL (그린/오렌지)":0.15,"[케이블] 소프트 CL (그레이/스카이블루)":0.15,"[SITUS] Bicolor Wallet Tyvek® - Silver×Bright Pink":0.15,"[SITUS] Bicolor Wallet Tyvek® - Silver×Cobalt Blue":0.15,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Green":0.15,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Orange#14119":0.15,"[SITUS] Minimalist Wallet Tyvek® - Gray":0.15,"[SITUS] Minimalist Wallet Tyvek® - Black":0.15,"[SITUS] Minimalist Wallet Tyvek® - Ivy Green":0.15,"[SITUS] Minimalist Wallet Tyvek® - Beige":0.15,"[SITUS] Minimalist Wallet Tyvek® - Silver":0.15,"[삼립] 삼립호빵 글로브 + 호찜이 SET":0.15,"[TETTET] Pot - L (green)":0.15,"[TETTET] Pot - L (red)":0.15,"[TETTET] Pot - L (white)":0.15,"[TETTET] Pot - L (yellow)":0.15,"[삼립] 호빵 파우치":0.15,"[삼립] 삼립호빵 미니백":0.15,"[TETTET] Pot - S (green)":0.15,"[TETTET] Pot - S (red)":0.15,"[TETTET] Pot - S (white)":0.15,"[TETTET] Pot - S (yellow)":0.15},"오늘의 집":{"[거울] 수퍼 튜브 미러 - S (그린)":0.1,"[거울] 수퍼 튜브 미러 - S (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - S (실버)":0.1,"[거울] 수퍼 튜브 미러 - S (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - S (화이트)":0.1,"[거울] 수퍼 튜브 미러 - L (그린)":0.1,"[거울] 수퍼 튜브 미러 - L (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - L (실버)":0.1,"[거울] 수퍼 튜브 미러 - L (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - L (화이트)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (그린)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (베이비핑크)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (실버)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - 스탠드 (화이트)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (그린)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (실버)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (오렌지)":0.1,"[거울] 수퍼 튜브 미러 - 쉘프 (화이트)":0.1,"[TETTET] Pot - L (green)":0.1,"[TETTET] Pot - L (red)":0.1,"[TETTET] Pot - L (white)":0.1,"[TETTET] Pot - L (yellow)":0.1,"[TETTET] Pot - S (green)":0.1,"[TETTET] Pot - S (red)":0.1,"[TETTET] Pot - S (white)":0.1,"[TETTET] Pot - S (yellow)":0.1,"[테이블] 3 Stage Table (실버)":0.18,"[페이퍼] 롤 (그리드-블랙 믹스)":0.15,"[페이퍼] 롤 (그리드-블랙1)":0.15,"[페이퍼] 롤 (그리드-블랙2)":0.15,"[페이퍼] 롤 (그리드-블루 믹스)":0.15,"[페이퍼] 롤 (그리드-블루1)":0.15,"[페이퍼] 롤 (그리드-블루2)":0.15,"[페이퍼] 롤 (그리드-테라코타 믹스)":0.15,"[페이퍼] 롤 (그리드-테라코타1)":0.15,"[페이퍼] 롤 (그리드-테라코타2)":0.15,"[페이퍼] 데코 (그리드-블루2)":0.15,"[페이퍼] 데코 (그리드-테라코타1)":0.15,"[페이퍼] 데코 (그리드-블랙 믹스)":0.15,"[페이퍼] 데코 (그리드-블랙1)":0.15,"[페이퍼] 데코 (그리드-블랙)]":0.15,"[페이퍼] 데코 (그리드-블루 믹스)":0.15,"[페이퍼] 데코 (그리드-블루1)":0.15,"[페이퍼] 데코 (그리드-테라코타 믹스)":0.15,"[페이퍼] 데코 (그리드-테라코타2)":0.15,"[페이퍼] 샘플 (그리드-블루 믹스)":0.15,"[페이퍼] 샘플 (그리드-블루1)":0.15,"[페이퍼] 샘플 (그리드-블루2)":0.15,"[페이퍼] 샘플 (그리드-테라코타 믹스)":0.15,"[페이퍼] 샘플 (그리드-테라코타1)":0.15,"[페이퍼] 샘플 (그리드-테라코타2)":0.15,"[페이퍼] 샘플 (그리드-블랙 믹스)":0.15,"[페이퍼] 샘플 (그리드-블랙1)":0.15,"[페이퍼] 샘플 (그리드-블랙2)":0.15,"[조명] Balloon Pendant Lamp (yellow)":0.2,"[시계] Zentra Ticki Tack Clock (green)":0.2,"[케이블] 소프트 CC (스카이블루/그린)":0.2,"[케이블] 소프트 CC (블루/그린)":0.2,"[케이블] 소프트 CC (그린/오렌지)":0.2,"[케이블] 소프트 CC (그레이/스카이블루)":0.2,"[케이블] 소프트 CL (스카이블루/그린)":0.2,"[케이블] 스파이럴 CL (그레이/스카이블루)":0.2,"[페이퍼] 샘플 (스트라이프-그린)":0.2,"[페이퍼] 샘플 (스트라이프-레드)":0.2,"[페이퍼] 샘플 (스트라이프-브라운)":0.2,"[페이퍼] 샘플 (스트라이프-블루)":0.2,"[페이퍼] 샘플 (스트라이프-스카이블루)":0.2,"[페이퍼] 샘플 (스트라이프-오렌지)":0.2,"[페이퍼] 롤 (스트라이프-그린)":0.2,"[페이퍼] 롤 (스트라이프-브라운)":0.2,"[페이퍼] 롤 (스트라이프-블루)":0.2,"[페이퍼] 롤 (스트라이프-스카이블루)":0.2,"[페이퍼] 롤 (스트라이프-오렌지)":0.2,"[페이퍼] 롤 (스트라이프-레드)":0.2,"[페이퍼] 샘플 (체커-그린)":0.2,"[페이퍼] 샘플 (체커-그린/블루)":0.2,"[페이퍼] 샘플 (체커-오렌지/블루)":0.2,"[페이퍼] 롤 (체커-그린)":0.2,"[페이퍼] 롤 (체커-그린/블루)":0.2,"[페이퍼] 롤 (체커-오렌지/블루)":0.2,"[페이퍼] 샘플 (타일-그린)":0.2,"[페이퍼] 샘플 (타일-브라운)":0.2,"[페이퍼] 샘플 (타일-블루)":0.2,"[페이퍼] 롤 (타일-그린)":0.2,"[페이퍼] 롤 (타일-브라운)":0.2,"[페이퍼] 롤 (타일-블루)":0.2,"[페이퍼] 샘플 (체커스트라이프-그린)":0.2,"[페이퍼] 샘플 (체커스트라이프-레드)":0.2,"[페이퍼] 샘플 (체커스트라이프-블루)":0.2,"[페이퍼] 롤 (체커스트라이프-그린)":0.2,"[페이퍼] 롤 (체커스트라이프-레드)":0.2,"[페이퍼] 롤 (체커스트라이프-블루)":0.2},"네이버 스마트스토어":{"[트롤리] AT HOME TROLLY (실버/화이트)":0.06,"[케이블] 소프트 CC (그레이/스카이블루)":0.06,"[케이블] 소프트 CC (그린/오렌지)":0.06,"[케이블] 소프트 CC (블루/그린)":0.06,"[케이블] 소프트 CC (스카이블루/그린)":0.06,"[케이블] 소프트 CC (핑크/옐로우)":0.06,"[케이블] 소프트 CC (클리어/실버)":0.06,"[케이블] 소프트 CL (스카이블루/그린)":0.06,"[케이블] 소프트 CL (그린/오렌지)":0.06,"[케이블] 소프트 CL (그레이/스카이블루)":0.06,"[케이블] 스파이럴 CC (그레이/스카이블루)":0.06,"[케이블] 스파이럴 CC (그린/오렌지)":0.06,"[케이블] 스파이럴 CC (블루)":0.06,"[케이블] 스파이럴 CC (스카이블루/그린)":0.06,"[케이블] 스파이럴 CC (옐로우)":0.06,"[케이블] 스파이럴 CC (핑크/옐로우)":0.06,"[SPM] Paper Rack by DOMINO ARCHITECTS (blue/orange)":0.06,"[SPM] Paper Rack by DOMINO ARCHITECTS (ivory)":0.06,"[SPM] Paper Rack by DOMINO ARCHITECTS (yellow)":0.06,"[가방] 슈퍼 플렉스 백":0.06,"[페이퍼] 샘플 (체커스트라이프-테라코타)":0.06,"[페이퍼] 샘플 (체커스트라이프-그린)":0.06,"[페이퍼] 샘플 (체커스트라이프-블루)":0.06,"[페이퍼] 롤 (체커스트라이프-그린)":0.06,"[페이퍼] 롤 (체커스트라이프-블루)":0.06,"[페이퍼] 샘플 (체커-오렌지/블루)":0.06,"[페이퍼] 샘플 (체커-그린/블루)":0.06,"[페이퍼] 샘플 (체커-그린)":0.06,"[페이퍼] 롤 (체커-오렌지/블루)":0.06,"[페이퍼] 롤 (체커-그린/블루)":0.06,"[페이퍼] 샘플 (그리드-블랙1)":0.06,"[페이퍼] 샘플 (그리드-블랙2)":0.06,"[페이퍼] 샘플 (그리드-블랙 믹스)":0.06,"[페이퍼] 샘플 (그리드-블루1)":0.06,"[페이퍼] 샘플 (그리드-블루2)":0.06,"[페이퍼] 샘플 (그리드-블루 믹스)":0.06,"[페이퍼] 샘플 (그리드-테라코타1)":0.06,"[페이퍼] 샘플 (그리드-테라코타2)":0.06,"[페이퍼] 샘플 (그리드-테라코타 믹스)":0.06,"[페이퍼] 롤 (그리드-블랙 믹스)":0.06,"[페이퍼] 롤 (그리드-블랙1)":0.06,"[페이퍼] 롤 (그리드-블랙2)":0.06,"[페이퍼] 롤 (그리드-블루 믹스)":0.06,"[페이퍼] 롤 (그리드-블루1)":0.06,"[페이퍼] 롤 (그리드-블루2)":0.06,"[페이퍼] 롤 (그리드-테라코타 믹스)":0.06,"[페이퍼] 롤 (그리드-테라코타1)":0.06,"[페이퍼] 롤 (그리드-테라코타2)":0.06,"[페이퍼] 샘플 (스트라이프-그린)":0.06,"[페이퍼] 샘플 (스트라이프-레드)":0.06,"[페이퍼] 샘플 (스트라이프-브라운)":0.06,"[페이퍼] 샘플 (스트라이프-블루)":0.06,"[페이퍼] 샘플 (스트라이프-스카이블루)":0.06,"[페이퍼] 샘플 (스트라이프-오렌지)":0.06,"[페이퍼] 롤 (스트라이프-그린)":0.06,"[페이퍼] 롤 (스트라이프-브라운)":0.06,"[페이퍼] 롤 (스트라이프-블루)":0.06,"[페이퍼] 롤 (스트라이프-스카이블루)":0.06,"[페이퍼] 롤 (스트라이프-오렌지)":0.06,"[페이퍼] 롤 (스트라이프-레드)":0.06,"[페이퍼] 샘플 (타일-그린)":0.06,"[페이퍼] 샘플 (타일-브라운)":0.06,"[페이퍼] 샘플 (타일-블루)":0.06,"[페이퍼] 롤 (타일-그린)":0.06,"[페이퍼] 롤 (타일-브라운)":0.06,"[페이퍼] 롤 (타일-블루)":0.06,"[행거] 튜브 (그린)":0.06,"[행거] 튜브 (베이비 핑크)":0.06,"[행거] 튜브 (오렌지)":0.06,"[행거] 튜브 (화이트)":0.06,"[거울] 수퍼 튜브 미러 - L (그린)":0.06,"[거울] 수퍼 튜브 미러 - L (베이비핑크)":0.06,"[거울] 수퍼 튜브 미러 - L (실버)":0.06,"[거울] 수퍼 튜브 미러 - L (오렌지)":0.06,"[거울] 수퍼 튜브 미러 - L (화이트)":0.06,"[거울] 수퍼 튜브 미러 - 스탠드 (그린)":0.06,"[거울] 수퍼 튜브 미러 - 스탠드 (베이비핑크)":0.06,"[거울] 수퍼 튜브 미러 - 스탠드 (실버)":0.06,"[거울] 수퍼 튜브 미러 - 스탠드 (오렌지)":0.06,"[거울] 수퍼 튜브 미러 - 스탠드 (화이트)":0.06,"[페이퍼] 데코 (그리드-블루2)":0.06,"[페이퍼] 데코 (그리드-테라코타1)":0.06,"[페이퍼] 데코 (그리드-블랙 믹스)":0.06,"[페이퍼] 데코 (그리드-블랙1)":0.06,"[페이퍼] 데코 (그리드-블랙)]":0.06,"[페이퍼] 데코 (그리드-블루 믹스)":0.06,"[페이퍼] 데코 (그리드-블루1)":0.06,"[페이퍼] 데코 (그리드-테라코타 믹스)":0.06,"[페이퍼] 데코 (그리드-테라코타2)":0.06,"[AMVEL] Pentagon 72 (Ice Blue)":0.06,"[AMVEL] Pentagon 72 (Gold Orange)":0.06,"[AMVEL] Pentagon 72 (Mint Blue)":0.06,"[AMVEL] Pentagon 72 (Midnight Blue)":0.06,"[AMVEL] Pentagon 72 (Classic Grape)":0.06,"[AMVEL] Pentagon 72 (Black)":0.06,"[AMVEL] Pentagon 72 (Cherry Pink)":0.06,"[HEE] T-SHIRT - L (화이트)":0.06,"[HEE] T-SHIRT - XL (화이트)":0.06,"[HEE] T-SHIRT - M (옐로우)":0.06,"[HEE] T-SHIRT - L (옐로우)":0.06,"[HEE] T-SHIRT - XL (옐로우)":0.06,"[HEE] 소프트 CC (그레이/오렌지)":0.06,"[HEE] 스파이럴 CC (블랙/그린)":0.06,"[HEE] Mirror - XL (그린)":0.06,"[HEE] Mirror - XL (오렌지)":0.06,"[HEE] Mirror - XL (화이트)":0.06,"[HEE] Mirror - XS (그린)":0.06,"[HEE] Mirror - XS (화이트)":0.06,"[오르쏘] 익명의 건물 키링 - 스카이블루":0.06,"[오르쏘] 익명의 건물 키링 - 화이트":0.06,"[SALLIES] Pocket Pal (그린)":0.06,"[SALLIES] Pocket Pal (도트 - 블랙/화이트)":0.06,"[SALLIES] Pocket Pal (도트-실버/블랙)":0.06,"[SALLIES] Pocket Pal (브라운)":0.06,"[SALLIES] Pocket Pal (블랙)":0.06,"[SALLIES] Pocket Pal (블루)":0.06,"[SALLIES] Pocket Pal (옐로우)":0.06,"[SALLIES] Pocket Pal (오렌지)":0.06,"[SALLIES] Pocket Pal (체커 - 실버/블랙)":0.06,"[SALLIES] Pocket Pal (체커2 - 그린)":0.06,"[SALLIES] Pocket Pal (체커2 - 블랙)":0.06,"[SALLIES] Pocket Pal (클리어)":0.06,"[SALLIES] Pocket Pal (핑크)":0.06,"[SALLIES] Pocket Pal (체커2-옐로우)":0.06,"[SITUS] Bicolor Wallet Tyvek® - Silver×Bright Pink":0.06,"[SITUS] Bicolor Wallet Tyvek® - Silver×Cobalt Blue":0.06,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Green":0.06,"[SITUS] Bicolor Wallet Tyvek® - Silver×Fluorescent Orange#14119":0.06,"[SITUS] Minimalist Wallet Tyvek® - Gray":0.06,"[SITUS] Minimalist Wallet Tyvek® - Black":0.06,"[SITUS] Minimalist Wallet Tyvek® - Ivy Green":0.06,"[SITUS] Minimalist Wallet Tyvek® - Beige":0.06,"[SITUS] Minimalist Wallet Tyvek® - Silver":0.06,"[SITUS] Minimalist Wallet PVC - Clear":0.06,"[SITUS] Minimalist Wallet PVC - Clear Purple#14122":0.06,"[SITUS] Minimalist Wallet PVC - Kohaku":0.06,"[SITUS] Minimalist Wallet PVC - Ocean":0.06,"[SITUS] Short Slim Card Case Tyvek® - Black":0.06,"[SITUS] Short Slim Card Case Tyvek® - Silver":0.06,"[SITUS] Short Slim Wallet Tyvek® - Black":0.06,"[SITUS] Short Slim Wallet Tyvek® - Silver":0.06,"[SITUS] Micro Wallet Tyvek® - Black":0.06,"[SITUS] Micro Wallet Tyvek® - Silver":0.06,"[삼립] 호빵 파우치":0.06,"[삼립] 삼립호빵 미니백":0.06,"[삼립] 삼립호빵 글로브 + 호찜이 SET":0.06,"사무엘스몰즈 리무버블 포스터 - 3 Stage (600x780mm) NOT ON TOSS":0.06,"[삼립] 호찜이":0.06,"[케이블] 소프트 CC 2m (화이트)":0.06,"[케이블] 소프트 CC 2m (클리어/실버)":0.06,"[케이블] 소프트 CC 2m (오렌지)":0.06,"[케이블] 소프트 CC 2m (스카이블루)":0.06,"[케이블] 소프트 CC 2m (블랙)":0.06,"[케이블] 케이블 링 CC (블루/그린)":0.06,"[케이블] 케이블링 CC (그린/오렌지)":0.06,"[케이블] 케이블링 CC (핑크/네온그린)":0.06},"아난티몰":{"[TETTET] Pot - L (green)":0.15,"[TETTET] Pot - L (red)":0.15,"[TETTET] Pot - L (white)":0.15,"[TETTET] Pot - L (yellow)":0.15,"[TETTET] Pot - S (green)":0.15,"[TETTET] Pot - S (red)":0.15,"[TETTET] Pot - S (white)":0.15,"[TETTET] Pot - S (yellow)":0.15,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-green)":0.15,"[SOLDIDESIGN] Ovetto Abs Trash Can (white-yellow)":0.15,"[테이블] 3 Stage Table (실버)":0.15,"[거울] 수퍼 튜브 미러 - S (그린)":0.15,"[거울] 수퍼 튜브 미러 - S (베이비핑크)":0.15,"[거울] 수퍼 튜브 미러 - S (실버)":0.15,"[거울] 수퍼 튜브 미러 - S (오렌지)":0.15,"[거울] 수퍼 튜브 미러 - S (화이트)":0.15,"[거울] 수퍼 튜브 미러 - L (그린)":0.15,"[거울] 수퍼 튜브 미러 - L (베이비핑크)":0.15,"[거울] 수퍼 튜브 미러 - L (실버)":0.15,"[거울] 수퍼 튜브 미러 - L (오렌지)":0.15,"[거울] 수퍼 튜브 미러 - L (화이트)":0.15,"[거울] 수퍼 튜브 미러 - 스탠드 (그린)":0.15,"[거울] 수퍼 튜브 미러 - 스탠드 (베이비핑크)":0.15,"[거울] 수퍼 튜브 미러 - 스탠드 (실버)":0.15,"[거울] 수퍼 튜브 미러 - 스탠드 (오렌지)":0.15,"[거울] 수퍼 튜브 미러 - 스탠드 (화이트)":0.15}};
+
+// 상품명 정규화 (/ #번호, 사이즈 접미사 제거)
+function normProductName(name) {
+  return String(name || '').trim()
+    .replace(/\s*\/\s*#\d+.*$/, '')
+    .replace(/\s+-\s+(XS|S|M|L|XL|XXL|FREE|ONE SIZE|ONE)\s*$/i, '')
+    .trim();
+}
+
+// 상품+플랫폼별 수수료율 조회 (없으면 플랫폼 기본값 폴백)
+function lookupProductFee(platform, productName) {
+  const pmap = PRODUCT_FEE_MAP[platform];
+  if (!pmap) return PLATFORM_FEE[platform] || 0;
+  const norm = normProductName(productName);
+  if (pmap[norm] !== undefined) return pmap[norm];
+  for (const key of Object.keys(pmap)) {
+    if (norm.startsWith(key) || key.startsWith(norm)) return pmap[key];
+  }
+  return PLATFORM_FEE[platform] || 0;
+}
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      // cellDates 제거 — SheetJS의 커스텀 numFmt 날짜 변환 버그 방지
+      const wb = XLSX.read(e.target.result, { type: 'binary' });
+      processWorkbook(wb, file.name);
+    } catch(err) {
+      showError('파일을 읽는 중 오류가 발생했습니다: ' + err.message);
+    }
+  };
+  reader.readAsBinaryString(file);
+}
+
+
+function goBack() {
+  document.getElementById('uploadSection').style.display = 'flex';
+  document.getElementById('dashboard').classList.remove('visible');
+  fileInput.value = '';
+}
+
+// ─── HTML 저장 ───
+// ─── GITHUB 저장 ───────────────────────────────────────────
+function openGitHubModal() {
+  if (!window._dashData) return alert('먼저 파일을 업로드해주세요.');
+  // 파일명: 월 레이블 기반 자동 생성 (예: dashboard-2026-03.html)
+  const d = window._dashData;
+  const autoName = d && d.monthLabel
+    ? 'dashboard-' + d.monthLabel.replace(/\s/g, '-').replace(/[^a-zA-Z0-9\-]/g, '') + '.html'
+    : 'result.html';
+  document.getElementById('ghToken').value = localStorage.getItem('ghToken') || '';
+  document.getElementById('ghRepo').value  = localStorage.getItem('ghRepo')  || '';
+  document.getElementById('ghPath').value  = autoName;
+  document.getElementById('ghStatus').textContent = '';
+  document.getElementById('ghStatus').className = 'gh-modal-status';
+  document.getElementById('ghUploadBtn').disabled = false;
+  document.getElementById('ghUploadBtn').textContent = '저장';
+  document.getElementById('ghModal').classList.add('open');
+}
+
+function closeGitHubModal() {
+  document.getElementById('ghModal').classList.remove('open');
+}
+
+async function uploadToGitHub() {
+  const token = document.getElementById('ghToken').value.trim();
+  const repo  = document.getElementById('ghRepo').value.trim();
+  const path  = document.getElementById('ghPath').value.trim() || 'index.html';
+  if (!token || !repo) { alert('토큰과 저장소를 입력해주세요.'); return; }
+
+  localStorage.setItem('ghToken', token);
+  localStorage.setItem('ghRepo',  repo);
+  localStorage.setItem('ghPath',  path);
+
+  const btn    = document.getElementById('ghUploadBtn');
+  const status = document.getElementById('ghStatus');
+  btn.disabled = true;
+  btn.textContent = '업로드 중...';
+  status.className = 'gh-modal-status';
+  status.textContent = '⏳ HTML 생성 중...';
+
+  try {
+    // 1. 대시보드 HTML 생성 (downloadDashboard와 동일 로직)
+    const html    = buildDashboardHTML();
+    const content = btoa(unescape(encodeURIComponent(html)));  // UTF-8 → base64
+
+    status.textContent = '⏳ GitHub에 업로드 중...';
+
+    const apiBase = `https://api.github.com/repos/${repo}/contents/${path}`;
+    const headers = {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    };
+
+    // 2. 기존 파일 SHA 확인
+    let sha = null;
+    const getRes = await fetch(apiBase, { headers });
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      sha = existing.sha;
+    }
+
+    // 3. 파일 업로드
+    const title = document.getElementById('topbarTitle').textContent || '매출 대시보드';
+    const body  = { message: `${title} 업데이트`, content };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiBase, {
+      method: 'PUT', headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message || putRes.status);
+    }
+
+    // 4. GitHub Pages URL 추출 (결과 파일 직접 링크)
+    const [owner, repoName] = repo.split('/');
+    const pageUrl = `https://${owner}.github.io/${repoName}/${path}`;
+    status.className = 'gh-modal-status ok';
+    status.innerHTML = `✅ 업로드 완료!<br><a href="${pageUrl}" target="_blank" style="color:#1d6f42;font-weight:700;">${pageUrl}</a><br><small style="color:#6b7280;">(반영까지 1~2분 소요)</small>`;
+    btn.textContent = '저장';
+    btn.disabled = false;
+
+  } catch (err) {
+    status.className = 'gh-modal-status err';
+    status.textContent = '❌ 실패: ' + err.message;
+    btn.textContent = '저장';
+    btn.disabled = false;
+  }
+}
+
+function buildDashboardHTML() {
+  const d = window._dashData;
+  const title = document.getElementById('topbarTitle').textContent || '매출 대시보드';
+  const cloned = document.getElementById('dashboard').cloneNode(true);
+  const css = Array.from(document.styleSheets).map(s => {
+    try { return Array.from(s.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
+  }).join('\n');
+  const chartData = {};
+  if (mixChartInst)    chartData.mix    = JSON.parse(JSON.stringify(mixChartInst.data));
+  if (dailyChartInst)  chartData.daily  = JSON.parse(JSON.stringify(dailyChartInst.data));
+  if (catChartInst)    chartData.cat    = JSON.parse(JSON.stringify(catChartInst.data));
+  if (onlineChartInst) chartData.online = JSON.parse(JSON.stringify(onlineChartInst.data));
+  const totalSales  = d ? d.totalSales  : 0;
+  const onlineTotal = d ? d.onlineTotal : 0;
+
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"><\/script>
+  <style>
+    ${css}
+    #uploadSection { display: none !important; }
+    .dash-topbar-right button { display: none !important; }
+    .gh-modal-overlay { display: none !important; }
+    body { background: #f0f2f5; }
+  </style>
+</head>
+<body>
+  <div id="dashboard" class="visible">
+    ${cloned.innerHTML}
   </div>
   <script>
-    const __cd = {"mix":{"labels":["🏪 오프라인","💻 온라인","🤝 프로젝트"],"datasets":[{"data":[19526200,881000,17372000],"backgroundColor":["#2e72d2","#1abc9c","#e07a2e"],"borderWidth":3,"borderColor":"#fff"}]},"daily":{"labels":["1일(수)","2일(목)","3일(금)","4일(토)","5일(일)","6일(월)","7일(화)","8일(수)","9일(목)","10일(금)","11일(토)","12일(일)","13일(월)","14일(화)","15일(수)","16일(목)","17일(금)","18일(토)","19일(일)","20일(월)","21일(화)"],"datasets":[{"label":"매출액","data":[423000,983000,1137000,429000,2511000,1200100,424500,915000,1008000,672000,1033000,1612000,821000,917600,725000,1834000,435000,978000,1052500,973000,323500],"backgroundColor":"rgba(46,114,210,0.75)","borderColor":"#2e72d2","borderWidth":1},{"label":"마진액","data":[269225,697140,612100,302400,1782970,745895,314000,675490,601830,431680,826635,940500,570435,676695,491175,1262625,324500,803400,726835,670850,236000],"backgroundColor":"rgba(30,158,91,0.75)","borderColor":"#1e9e5b","borderWidth":1}]},"cat":{"labels":["ELECTRIC","LIVING","FURNITURE","GOODS","LIGHT","POSTER","FASHION","ETC"],"datasets":[{"data":[9229000,3062000,2554000,2109200,1330000,1115000,972000,36000],"backgroundColor":["#2e72d2","#1e9e5b","#e07a2e","#9b59b6","#e05252","#1abc9c","#f39c12","#34495e"],"borderWidth":2}]},"online":{"labels":["29cm","네이버 스마트스토어","오늘의 집","카페24"],"datasets":[{"data":[232000,246000,167000,236000],"backgroundColor":["#1a1a2e","#03c75a","#50c878","#ff6b35"],"borderWidth":2}]}};
-    const __ts = 37779200;
-    const __ot = 881000;
+    const __cd = ${JSON.stringify(chartData)};
+    const __ts = ${totalSales};
+    const __ot = ${onlineTotal};
     window.addEventListener('DOMContentLoaded', function() {
       if (__cd.mix) {
         new Chart(document.getElementById('mixChart'), {
@@ -1939,6 +602,1017 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         if (el.classList.contains('cat-pane')) el.classList.toggle('active', el.dataset.ptab === tab);
       });
     }
-  </script>
+  <\/script>
+</body>
+</html>`;
+}
+
+function downloadDashboard() {
+  const html  = buildDashboardHTML();
+  const title = document.getElementById('topbarTitle').textContent || '매출 대시보드';
+  const blob  = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url   = URL.createObjectURL(blob);
+  const a     = document.createElement('a');
+  a.href      = url;
+  a.download  = title.replace('📊 ', '').replace(/\s+/g, '_') + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── 엑셀 다운로드 ───
+function downloadExcel() {
+  const d = window._dashData;
+  if (!d) return;
+  const wb = XLSX.utils.book_new();
+
+  // 요약
+  const smr = d.showroomSales > 0 ? d.showroomMargin / d.showroomSales : 0;
+  const emr = d.externalSales > 0 ? d.externalMargin / d.externalSales : 0;
+  const tmr = d.totalSales    > 0 ? d.totalMargin    / d.totalSales    : 0;
+  const ws1 = XLSX.utils.aoa_to_sheet([
+    ['구분', '매출액', '마진액', '마진율'],
+    ['쇼룸/온라인', d.showroomSales, d.showroomMargin, smr],
+    ['외부(B2B/프로젝트)', d.externalSales, d.externalMargin, emr],
+    ['TOTAL', d.totalSales, d.totalMargin, tmr],
+  ]);
+  ws1['!cols'] = [{wch:20},{wch:16},{wch:16},{wch:10}];
+  ['D2','D3','D4'].forEach(addr => { if (ws1[addr]) ws1[addr].z = '0.0%'; });
+  XLSX.utils.book_append_sheet(wb, ws1, '요약');
+
+  // 일자별 매출
+  const dailyData = [['날짜','요일','매출액','마진액','마진율']];
+  for (const r of d.dailyRows) {
+    const mr = r.sales > 0 ? r.margin / r.sales : null;
+    dailyData.push([
+      `${r.date.getUTCMonth()+1}/${r.date.getUTCDate()}`,
+      DAYS[r.date.getUTCDay()],
+      r.sales,
+      r.hasMargin ? r.margin : '',
+      r.hasMargin && mr != null ? mr : ''
+    ]);
+  }
+  const totalDailySales  = d.dailyRows.reduce((s,r) => s + r.sales, 0);
+  const totalDailyMargin = d.dailyRows.reduce((s,r) => s + r.margin, 0);
+  dailyData.push(['합계', '', totalDailySales, totalDailyMargin, totalDailySales > 0 ? totalDailyMargin / totalDailySales : '']);
+  const ws2 = XLSX.utils.aoa_to_sheet(dailyData);
+  ws2['!cols'] = [{wch:8},{wch:6},{wch:14},{wch:14},{wch:10}];
+  for (let i = 2; i <= dailyData.length; i++) {
+    const addr = `E${i}`;
+    if (ws2[addr] && typeof ws2[addr].v === 'number') ws2[addr].z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, ws2, '일자별 매출');
+
+  // 카테고리별
+  const catData = [['카테고리','수량','매출액','매출 비중','마진액','마진율']];
+  for (const r of d.catRows) catData.push([r.cat, r.qty, r.sales, r.shareRate, r.margin, r.marginRate]);
+  const ws3 = XLSX.utils.aoa_to_sheet(catData);
+  ws3['!cols'] = [{wch:14},{wch:8},{wch:14},{wch:10},{wch:14},{wch:10}];
+  for (let i = 2; i <= catData.length; i++) {
+    ['D','F'].forEach(col => { const a = `${col}${i}`; if (ws3[a] && typeof ws3[a].v === 'number') ws3[a].z = '0.0%'; });
+  }
+  XLSX.utils.book_append_sheet(wb, ws3, '카테고리별');
+
+  // 상품별 TOP5
+  const prodData = [['카테고리','순위','상품명','수량','매출액','마진액','마진율']];
+  for (const cat of Object.keys(d.top5)) {
+    d.top5[cat].forEach((p, idx) => {
+      const mr = p.sales > 0 && p.hasMargin ? p.margin / p.sales : '';
+      prodData.push([cat, idx+1, p.name, p.qty, p.sales, p.hasMargin ? p.margin : '', mr]);
+    });
+  }
+  const ws4 = XLSX.utils.aoa_to_sheet(prodData);
+  ws4['!cols'] = [{wch:14},{wch:6},{wch:40},{wch:8},{wch:14},{wch:14},{wch:10}];
+  for (let i = 2; i <= prodData.length; i++) {
+    const addr = `G${i}`; if (ws4[addr] && typeof ws4[addr].v === 'number') ws4[addr].z = '0.0%';
+  }
+  XLSX.utils.book_append_sheet(wb, ws4, '카테고리별 TOP5');
+
+  // 온라인 플랫폼별
+  if (d.onlineTotal > 0) {
+    const onlineData = [['플랫폼', '매출액', '비중']];
+    PLATFORMS.forEach(p => {
+      const v = d.onlineByPlatform[p] || 0;
+      onlineData.push([p, v, d.onlineTotal > 0 ? v / d.onlineTotal : 0]);
+    });
+    onlineData.push(['합계', d.onlineTotal, 1]);
+    const ws5 = XLSX.utils.aoa_to_sheet(onlineData);
+    ws5['!cols'] = [{wch:20},{wch:14},{wch:10}];
+    for (let i = 2; i <= onlineData.length; i++) {
+      const addr = `C${i}`; if (ws5[addr] && typeof ws5[addr].v === 'number') ws5[addr].z = '0.0%';
+    }
+    XLSX.utils.book_append_sheet(wb, ws5, '온라인 플랫폼별');
+  }
+
+  // B2B
+  if (d.b2bRows.length > 0) {
+    const b2bData = [['날짜','카테고리','업체','수량','금액','마진','비고']];
+    for (const r of d.b2bRows) b2bData.push([r.date, r.cat, r.vendor, r.qty, r.sales, r.margin != null ? r.margin : '', r.note]);
+    const ws6 = XLSX.utils.aoa_to_sheet(b2bData);
+    ws6['!cols'] = [{wch:12},{wch:12},{wch:20},{wch:8},{wch:14},{wch:14},{wch:30}];
+    XLSX.utils.book_append_sheet(wb, ws6, 'B2B 외부매출');
+  }
+
+  const fileName = (d.monthLabel || '매출_대시보드').replace(/\s/g,'_') + '_대시보드.xlsx';
+  XLSX.writeFile(wb, fileName);
+}
+
+// ─── DATA PROCESSING ───
+function processWorkbook(wb, filename) {
+  const names = wb.SheetNames;
+  const salesName   = names.find(n => n.includes('매출리포트(상품별)'));
+  const b2bName     = names.find(n => n.includes('B2B'));
+  const costName    = names.find(n => n.includes('원가'));
+  const paymentName = names.find(n => n.includes('결제'));
+
+  if (!salesName) {
+    showError(`'매출리포트(상품별)' 시트를 찾을 수 없습니다.<br>현재 시트: ${names.join(', ')}`);
+    return;
+  }
+
+  const rawSales   = XLSX.utils.sheet_to_json(wb.Sheets[salesName], { header: 1, defval: null, raw: true });
+  const rawB2B     = b2bName     ? XLSX.utils.sheet_to_json(wb.Sheets[b2bName],     { header: 1, defval: null, raw: true }) : [];
+  const rawCost    = costName    ? XLSX.utils.sheet_to_json(wb.Sheets[costName],    { header: 1, defval: null, raw: true }) : [];
+  const rawPayment = paymentName ? XLSX.utils.sheet_to_json(wb.Sheets[paymentName], { header: 1, defval: null, raw: true }) : [];
+
+  processSheetData(rawSales, rawB2B, rawCost, rawPayment, filename);
+}
+
+// ─── 데이터 처리 (Excel / Google Sheets 공용) ───
+function processSheetData(rawSales, rawB2B, rawCost, rawPayment, filename) {
+  // 원가 맵 {상품명: 원가}
+  const costMap = {};
+  for (let i = 1; i < rawCost.length; i++) {
+    const r = rawCost[i];
+    if (r && r[0] != null && r[1] != null) {
+      const cost = parseCost(r[1]);
+      if (cost !== null) costMap[String(r[0]).trim()] = cost;
+    }
+  }
+
+  // ── 결제 탭 형식 감지 ──
+  // [구 형식] 2행(index 1)에 플랫폼명(29cm, 네이버 등) → 월별 집계 테이블  ← 우선순위 높음
+  // [새 형식] 1행(index 0)에 "결제시각" + "매입사" 컬럼 → 개별 거래 레코드 (매입사로 온/오프 구분)
+  const payHdr0 = rawPayment[0] || [];
+  const payHdr1 = rawPayment[1] || [];
+  // 구 형식 확인: row1에 플랫폼명이 하나라도 있으면 무조건 구 형식 (퍼지 매칭 포함)
+  const hasPlatformsInRow1 = payHdr1.some(h => {
+    if (!h) return false;
+    const s = String(h).trim();
+    return s === '29cm' || /네이버|스마트스토어/i.test(s) || /오늘의.?집/i.test(s) || /카페\s*24/i.test(s);
+  });
+  // 새 형식 확인: row0에 "결제시각" + ("매입사" 또는 "주문채널") 있는 경우
+  const hasDetailCols = payHdr0.some(h => h && /결제\s*시각/.test(String(h)))
+                     && (payHdr0.some(h => h && String(h).includes('매입사'))
+                      || payHdr0.some(h => h && String(h).includes('주문채널')));
+  // 구 형식 우선 — 플랫폼이 row1에 있으면 무조건 구 형식
+  const isPayDetail = hasDetailCols && !hasPlatformsInRow1;
+
+  const onlineByPlatform = {};
+  PLATFORMS.forEach(p => { onlineByPlatform[p] = 0; });
+  let onlineTimestampSet = new Set(); // 온라인 거래 타임스탬프 집합 (detail 전용)
+  let paymentMap = {};                // tsMinKey → platform  (detail 전용)
+  let platformCols = {};             // platform → col idx  (summary 전용)
+  const oldOnlineDailyMap = {};
+
+  if (isPayDetail) {
+    // ── 새 형식: 매입사 컬럼으로 온/오프라인 구분 ──
+    // 매입사: 카드사(삼성, 하나 등) = 오프라인, 플랫폼명(29cm, 카페24 등) = 온라인
+    const pColTime   = payHdr0.findIndex(h => h && /결제\s*시각/.test(String(h)));
+    const pColAcq    = payHdr0.findIndex(h => h && String(h).trim() === '매입사');
+    const pColStatus = payHdr0.findIndex(h => h && String(h).includes('결제상태'));
+    const pColAmt    = payHdr0.findIndex(h => h && String(h).includes('결제금액'));
+    for (let i = 1; i < rawPayment.length; i++) {
+      const r = rawPayment[i];
+      if (!r || r[pColTime] == null) continue;
+      if (pColStatus >= 0 && r[pColStatus] && String(r[pColStatus]).includes('취소')) continue;
+      const tsKey = tsMinKey(r[pColTime]);
+      if (!tsKey) continue;
+      const acq = pColAcq >= 0 ? String(r[pColAcq] || '').trim() : '';
+      const platform = matchPlatform(acq); // 온라인 플랫폼이면 키 반환, 카드사면 null
+      if (platform !== null) {
+        // 온라인 거래
+        onlineTimestampSet.add(tsKey);
+        const amt = pColAmt >= 0 ? (Number(r[pColAmt]) || 0) : 0;
+        if (PLATFORMS.includes(platform)) onlineByPlatform[platform] += amt;
+        // 같은 분에 여러 플랫폼: 금액 많은 쪽 또는 첫 번째
+        if (!paymentMap[tsKey]) paymentMap[tsKey] = platform;
+      }
+    }
+  } else {
+    // ── 구 형식: 플랫폼별 일별 집계 ──
+    // 퍼지 매칭으로 플랫폼 컬럼 찾기
+    PLATFORMS.forEach(p => {
+      const idx = payHdr1.findIndex(h => {
+        if (!h) return false;
+        const s = String(h).trim();
+        if (p === '29cm') return /29cm/i.test(s);
+        if (p === '네이버 스마트스토어') return /네이버|스마트스토어/i.test(s);
+        if (p === '오늘의 집') return /오늘의.?집/i.test(s);
+        if (p === '카페24') return /카페\s*24/i.test(s);
+        return s === p;
+      });
+      if (idx >= 0) platformCols[p] = idx;
+    });
+    for (let i = 2; i < rawPayment.length; i++) {
+      const r = rawPayment[i];
+      if (!r || !r[0]) continue;
+      const date = parseDate(r[0]);
+      if (!date) continue;
+      const k = dateKey(date);
+      if (!oldOnlineDailyMap[k]) { oldOnlineDailyMap[k] = { date }; PLATFORMS.forEach(p => oldOnlineDailyMap[k][p] = 0); }
+      PLATFORMS.forEach(p => {
+        const v = platformCols[p] != null ? (Number(r[platformCols[p]]) || 0) : 0;
+        onlineByPlatform[p] += v;
+        oldOnlineDailyMap[k][p] += v;
+      });
+    }
+  }
+
+  // ── 매출리포트 컬럼 인덱스 (헤더 기반, 구버전 폴백 포함) ──
+  const sHdr = rawSales[0] || [];
+  const fc = (...kws) => sHdr.findIndex(h => h && kws.some(k => String(h).includes(k)));
+  const sColDate   = fc('기준일자','날짜');
+  const sColTime   = fc('시작시각','주문시각');   // -1이면 없음
+  const sColName   = fc('상품명');
+  const sColCat    = fc('카테고리');
+  const sColQty    = fc('수량');
+  const sColSales  = fc('실판매금액');
+  const sColMargin = fc('마진');
+  // 구버전 폴백: 헤더가 없는 경우 고정 인덱스
+  const iDate   = sColDate   >= 0 ? sColDate   : 0;
+  const iTime   = sColTime;                         // -1이면 시각 없음
+  const iName   = sColName   >= 0 ? sColName   : (sColTime >= 0 ? 2 : 1);
+  const iCat    = sColCat    >= 0 ? sColCat    : (sColTime >= 0 ? 3 : 2);
+  const iQty    = sColQty    >= 0 ? sColQty    : (sColTime >= 0 ? 6 : 5);
+  const iSales  = sColSales  >= 0 ? sColSales  : (sColTime >= 0 ? 8 : 7);
+  const iMargin = sColMargin >= 0 ? sColMargin : 11;
+
+  // ── 매출 행 파싱 + 온/오프라인 태깅 ──
+  const salesRows = [];
+  for (let i = 2; i < rawSales.length; i++) {
+    const r = rawSales[i];
+    if (!r || r[iDate] == null) continue;
+    const date = parseDate(r[iDate]);
+    if (!date) continue;
+    const name  = String(r[iName]  || '').trim();
+    const cat   = String(r[iCat]   || 'ETC').trim();
+    const qty   = Number(r[iQty])  || 0;
+    const sales = Number(r[iSales]) || 0;
+
+    // 마진: L열 캐시 → 원가 탭 계산
+    const cachedMargin = (r[iMargin] != null && typeof r[iMargin] === 'number' && !isNaN(r[iMargin])) ? r[iMargin] : null;
+    const costUnit   = costMap[name] || null;
+    const costTotal  = costUnit != null ? costUnit * qty : null;
+    const calcMargin = costTotal != null ? sales - costTotal : null;
+    const margin = cachedMargin != null ? cachedMargin : calcMargin;
+
+    // 온라인 여부: 매입사 기반 타임스탬프 매칭
+    // 결제 합계의 매입사가 플랫폼명(29cm, 카페24 등)이면 온라인
+    let isOnline = false, platform = null;
+    if (isPayDetail && iTime >= 0 && r[iTime] != null) {
+      const tsKey = tsMinKey(r[iTime]);
+      if (tsKey && onlineTimestampSet.has(tsKey)) {
+        isOnline = true;
+        platform = paymentMap[tsKey] || null;
+      }
+    }
+
+    salesRows.push({ date, name, cat, qty, sales, costUnit, costTotal, margin, isOnline, platform });
+  }
+
+  // ── B2B 행 파싱 ──
+  const b2bRows = [];
+  for (let i = 1; i < rawB2B.length; i++) {
+    const r = rawB2B[i];
+    if (!r || r[4] == null) continue;
+    b2bRows.push({
+      date: r[0], cat: String(r[1]||''), vendor: String(r[2]||''),
+      qty: Number(r[3])||0, sales: Number(r[4])||0,
+      margin: r[5] != null ? Number(r[5]) : null,
+      note: r[6] ? String(r[6]) : ''
+    });
+  }
+
+  // ── 온/오프라인 집계 ──
+  const showroomSales  = sumField(salesRows, 'sales');
+  const showroomMargin = salesRows.reduce((s,r) => s + (r.margin != null ? r.margin : 0), 0);
+
+  let offlineSales, offlineMargin, onlineTotal, onlineMargin, onlineMarginByPlatform, onlineDailyRows, onlineGrossMR, isPayDetailResult, grossByPlatform = {}, onlineFeeByPlatform = {};
+
+  if (isPayDetail) {
+    // ✅ 정확한 분리: 실제 매칭 기반
+    const oRows = salesRows.filter(r => r.isOnline);
+    const xRows = salesRows.filter(r => !r.isOnline);
+    offlineSales  = sumField(xRows, 'sales');
+    offlineMargin = xRows.reduce((s,r) => s + (r.margin != null ? r.margin : 0), 0);
+    onlineTotal   = sumField(oRows, 'sales');
+    const onlineGrossMargin = oRows.reduce((s,r) => s + (r.margin != null ? r.margin : 0), 0);
+    onlineGrossMR = onlineTotal > 0 ? onlineGrossMargin / onlineTotal : 0;
+
+    // 플랫폼별 그로스마진 집계
+    grossByPlatform = {};
+    PLATFORMS.forEach(p => { onlineByPlatform[p] = 0; grossByPlatform[p] = 0; });
+    for (const row of oRows) {
+      const p = row.platform;
+      if (p && onlineByPlatform[p] !== undefined) {
+        onlineByPlatform[p] += row.sales;
+        if (row.margin != null) grossByPlatform[p] += row.margin;
+      }
+    }
+    // 순마진 = 그로스마진 - 수수료액 (수수료 = 매출 × 상품별 수수료율)
+    onlineMarginByPlatform = {};
+    onlineFeeByPlatform = {};
+    PLATFORMS.forEach(p => { onlineMarginByPlatform[p] = 0; onlineFeeByPlatform[p] = 0; });
+    for (const row of oRows) {
+      const p = row.platform;
+      if (!p || onlineMarginByPlatform[p] === undefined) continue;
+      const gross = row.margin != null ? row.margin : 0;
+      const feeRate = lookupProductFee(p, row.name);
+      const feeAmt = Math.round(row.sales * feeRate);
+      onlineMarginByPlatform[p] += gross - feeAmt;
+      onlineFeeByPlatform[p]    += feeAmt;
+    }
+    onlineMargin = PLATFORMS.reduce((s, p) => s + onlineMarginByPlatform[p], 0);
+
+    // 일별 온라인 집계
+    const odMap = {};
+    for (const row of oRows) {
+      const k = dateKey(row.date);
+      if (!odMap[k]) { odMap[k] = { date: row.date, total: 0 }; PLATFORMS.forEach(p => odMap[k][p] = 0); }
+      odMap[k].total += row.sales;
+      if (row.platform && odMap[k][row.platform] !== undefined) odMap[k][row.platform] += row.sales;
+    }
+    onlineDailyRows = Object.values(odMap).sort((a,b) => a.date - b.date);
+    isPayDetailResult = true;
+
+  } else {
+    // ▶ 구 형식: 추정 기반 (결제 합계 플랫폼 컬럼 기준)
+    onlineTotal = PLATFORMS.reduce((s, p) => s + onlineByPlatform[p], 0);
+    const baseMarginRate = showroomSales > 0 ? showroomMargin / showroomSales : 0;
+    onlineMarginByPlatform = {};
+    PLATFORMS.forEach(p => {
+      const fee = PLATFORM_FEE[p] || 0;
+      onlineMarginByPlatform[p] = Math.round(onlineByPlatform[p] * Math.max(0, baseMarginRate - fee));
+    });
+    onlineMargin  = PLATFORMS.reduce((s, p) => s + onlineMarginByPlatform[p], 0);
+    offlineSales  = showroomSales - onlineTotal;
+    offlineMargin = Math.round(offlineSales * baseMarginRate);
+    onlineGrossMR = baseMarginRate;
+    onlineDailyRows = Object.values(oldOnlineDailyMap)
+      .map(v => ({ ...v, total: PLATFORMS.reduce((s,p) => s + (v[p]||0), 0) }))
+      .sort((a,b) => a.date - b.date);
+    isPayDetailResult = false;
+  }
+  const externalSales  = sumField(b2bRows, 'sales');
+  const externalMargin = b2bRows.reduce((s,r) => s + (r.margin != null ? r.margin : 0), 0);
+  const totalSales  = showroomSales + externalSales; // 매출리포트(온+오프) + B2B
+  const totalMargin = showroomMargin + externalMargin;
+
+  // 일자별 집계
+  const dailyMap = {};
+  for (const r of salesRows) {
+    const k = dateKey(r.date);
+    if (!dailyMap[k]) dailyMap[k] = { date: r.date, sales: 0, margin: 0, hasMargin: false };
+    dailyMap[k].sales += r.sales;
+    if (r.margin != null) { dailyMap[k].margin += r.margin; dailyMap[k].hasMargin = true; }
+  }
+  const dailyRows = Object.values(dailyMap).sort((a,b) => a.date - b.date);
+
+  // 카테고리별 집계
+  const catMap = {};
+  for (const r of salesRows) {
+    if (!catMap[r.cat]) catMap[r.cat] = { qty: 0, sales: 0, margin: 0, marginCount: 0 };
+    catMap[r.cat].qty   += r.qty;
+    catMap[r.cat].sales += r.sales;
+    if (r.margin != null) { catMap[r.cat].margin += r.margin; catMap[r.cat].marginCount++; }
+  }
+  const catRows = Object.entries(catMap)
+    .map(([cat, v]) => ({ cat, ...v, shareRate: v.sales / showroomSales, marginRate: v.sales > 0 ? v.margin / v.sales : 0 }))
+    .sort((a,b) => b.sales - a.sales);
+
+  // 카테고리별 TOP5
+  const prodMap = {};
+  for (const r of salesRows) {
+    const k = r.cat + '|||' + r.name;
+    if (!prodMap[k]) prodMap[k] = { cat: r.cat, name: r.name, qty: 0, sales: 0, margin: 0, hasMargin: false };
+    prodMap[k].qty   += r.qty;
+    prodMap[k].sales += r.sales;
+    if (r.margin != null) { prodMap[k].margin += r.margin; prodMap[k].hasMargin = true; }
+  }
+  const top5 = {};
+  for (const v of Object.values(prodMap)) {
+    if (!top5[v.cat]) top5[v.cat] = [];
+    top5[v.cat].push(v);
+  }
+  for (const cat of Object.keys(top5)) {
+    top5[cat].sort((a,b) => b.sales - a.sales);
+    top5[cat] = top5[cat].slice(0, 5);
+  }
+
+  // 월 레이블
+  let monthLabel = '';
+  if (dailyRows.length > 0) {
+    const d = dailyRows[0].date;
+    monthLabel = `${d.getUTCFullYear()}년 ${d.getUTCMonth()+1}월`;
+  } else {
+    const m = filename.match(/(\d{4})년?\s*(\d{1,2})월/);
+    if (m) monthLabel = `${m[1]}년 ${m[2]}월`;
+  }
+
+  const baseMarginRate = showroomSales > 0 ? showroomMargin / showroomSales : 0;
+
+  // 온라인 품목별 집계 (플랫폼별)
+  const onlineItemMap = {};
+  if (isPayDetailResult) {
+    const oRows = salesRows.filter(r => r.isOnline && r.platform);
+    for (const r of oRows) {
+      const plat = r.platform;
+      const k = plat + '|||' + r.cat + '|||' + r.name;
+      if (!onlineItemMap[k]) onlineItemMap[k] = { platform: plat, cat: r.cat, name: r.name, qty: 0, sales: 0, margin: 0, hasMargin: false };
+      onlineItemMap[k].qty   += r.qty;
+      onlineItemMap[k].sales += r.sales;
+      if (r.margin != null) { onlineItemMap[k].margin += r.margin; onlineItemMap[k].hasMargin = true; }
+    }
+  }
+  const onlineItems = Object.values(onlineItemMap).sort((a, b) => b.sales - a.sales);
+
+  const dashData = { monthLabel, filename, showroomSales, showroomMargin, offlineSales, offlineMargin, externalSales, externalMargin, totalSales, totalMargin, dailyRows, catRows, top5, b2bRows, onlineTotal, onlineMargin, onlineByPlatform, onlineMarginByPlatform, onlineDailyRows, baseMarginRate, onlineGrossMR, isPayDetail: isPayDetailResult, onlineItems, grossByPlatform, onlineFeeByPlatform };
+  window._dashData = dashData;
+  renderDashboard(dashData);
+}
+
+// ─── RENDER ───
+function renderDashboard(d) {
+  document.getElementById('uploadSection').style.display = 'none';
+  document.getElementById('dashboard').classList.add('visible');
+  document.getElementById('topbarTitle').textContent = `📊 ${d.monthLabel} 매출 대시보드`;
+  document.getElementById('topbarFile').textContent = d.filename;
+  document.getElementById('errorBox').innerHTML = '';
+
+  renderSummary(d);
+  renderMixChart(d);
+  renderDailyChart(d.dailyRows);
+  renderDailyTable(d.dailyRows);
+  renderCatChart(d.catRows);
+  renderCatTable(d.catRows, d.showroomSales);
+  renderTop5(d.top5);
+  renderOnlineItems(d);
+  renderOnlineSection(d);
+  renderB2B(d.b2bRows);
+}
+
+function renderSummary(d) {
+  const omr = d.offlineSales > 0 ? d.offlineMargin / d.offlineSales : 0;
+  const emr = d.externalSales > 0 ? d.externalMargin / d.externalSales : 0;
+  const tmr = d.totalSales   > 0 ? d.totalMargin   / d.totalSales   : 0;
+  const onlineShare = d.totalSales > 0 ? d.onlineTotal / d.totalSales : 0;
+
+  // 오프라인 카드 = 매출리포트 합계 - 온라인
+  const offlineCard = `
+    <div class="sum-card">
+      <div class="sum-card-label">🏪 오프라인 (쇼룸)</div>
+      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">${fmt(d.offlineSales)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">${fmt(d.offlineMargin)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val ${mgClass(omr)}">${pct(omr)}</span></div>
+    </div>`;
+
+  // 온라인 카드
+  const onlineMr = d.onlineTotal > 0 ? (d.onlineMargin || 0) / d.onlineTotal : 0;
+  const onlineCard = `
+    <div class="sum-card">
+      <div class="sum-card-label">💻 온라인 매출</div>
+      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">${fmt(d.onlineTotal)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">${fmt(d.onlineMargin)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val ${mgClass(onlineMr)}">${pct(onlineMr)}</span></div>
+    </div>`;
+
+  // 프로젝트 카드
+  const projectCard = `
+    <div class="sum-card">
+      <div class="sum-card-label">🤝 프로젝트 (B2B)</div>
+      <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">${fmt(d.externalSales)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">${fmt(d.externalMargin)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val ${mgClass(emr)}">${pct(emr)}</span></div>
+    </div>`;
+
+  // TOTAL 카드
+  const totalCard = `
+    <div class="sum-card">
+      <div class="sum-card-label">💰 TOTAL</div>
+      <div class="sum-card-row"><span class="sum-card-key">총 매출액</span><span class="sum-card-val big-num">${fmt(d.totalSales)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진액</span><span class="sum-card-val">${fmt(d.totalMargin)}</span></div>
+      <div class="sum-card-row"><span class="sum-card-key">마진율</span><span class="sum-card-val ${mgClass(tmr)}">${pct(tmr)}</span></div>
+    </div>`;
+
+  // summary-row: 데스크탑 4열, 모바일은 CSS가 처리
+  const cols = window.innerWidth >= 640 ? 'repeat(4,1fr)' : 'repeat(2,1fr)';
+  document.getElementById('summaryCards').style.gridTemplateColumns = cols;
+  document.getElementById('summaryCards').innerHTML = offlineCard + onlineCard + projectCard + totalCard;
+}
+
+function renderMixChart(d) {
+  if (mixChartInst) mixChartInst.destroy();
+
+  const offlineSales  = d.offlineSales  || 0;
+  const onlineSales   = d.onlineTotal   || 0;
+  const projectSales  = d.externalSales || 0;
+  const total         = d.totalSales    || 1;
+
+  const offlineMR  = offlineSales  > 0 ? d.offlineMargin  / offlineSales  : 0;
+  const onlineMR   = onlineSales   > 0 ? (d.onlineMargin  || 0) / onlineSales   : 0;
+  const projectMR  = projectSales  > 0 ? d.externalMargin / projectSales  : 0;
+
+  const COLORS = ['#2e72d2', '#1abc9c', '#e07a2e'];
+  const labels  = ['🏪 오프라인', '💻 온라인', '🤝 프로젝트'];
+  const values  = [offlineSales, onlineSales, projectSales];
+  const margins = [d.offlineMargin || 0, d.onlineMargin || 0, d.externalMargin || 0];
+  const mrs     = [offlineMR, onlineMR, projectMR];
+
+  mixChartInst = new Chart(document.getElementById('mixChart'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: COLORS,
+        borderWidth: 3,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const share = (ctx.raw / total * 100).toFixed(1);
+              return ` ${ctx.label}: ${Math.round(ctx.raw).toLocaleString()}원 (${share}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // 오른쪽 비중 테이블
+  document.getElementById('mixTableWrap').innerHTML = `
+    <table style="width:100%;">
+      <thead>
+        <tr>
+          <th class="tl">채널</th>
+          <th class="tr">매출액</th>
+          <th class="tc">비중</th>
+          <th class="tr">마진액</th>
+          <th class="tc">마진율</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${labels.map((label, i) => {
+          const share = total > 0 ? values[i] / total : 0;
+          return `<tr>
+            <td class="tl" style="font-weight:600;">
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${COLORS[i]};margin-right:7px;vertical-align:middle;"></span>
+              ${label}
+            </td>
+            <td class="tr">${values[i] > 0 ? Math.round(values[i]).toLocaleString() : '-'}</td>
+            <td class="tc">
+              ${values[i] > 0 ? `<div style="display:flex;align-items:center;gap:6px;">
+                <div class="prog-bar-wrap" style="flex:1;min-width:70px;">
+                  <div class="prog-bar" style="width:${(share*100).toFixed(1)}%;background:${COLORS[i]};"></div>
+                </div>
+                <span style="min-width:36px;">${(share*100).toFixed(1)}%</span>
+              </div>` : '-'}
+            </td>
+            <td class="tr">${margins[i] > 0 ? Math.round(margins[i]).toLocaleString() : '-'}</td>
+            <td class="tc ${values[i] > 0 ? mgClass(mrs[i]) : ''}">${values[i] > 0 ? pct(mrs[i]) : '-'}</td>
+          </tr>`;
+        }).join('')}
+        <tr class="bold-row">
+          <td class="tl">합계</td>
+          <td class="tr">${Math.round(total).toLocaleString()}</td>
+          <td class="tc">100%</td>
+          <td class="tr">${Math.round(d.totalMargin || 0).toLocaleString()}</td>
+          <td class="tc ${mgClass(d.totalSales > 0 ? d.totalMargin/d.totalSales : 0)}">${pct(d.totalSales > 0 ? d.totalMargin/d.totalSales : 0)}</td>
+        </tr>
+      </tbody>
+    </table>`;
+}
+
+function renderDailyChart(rows) {
+  if (dailyChartInst) dailyChartInst.destroy();
+  dailyChartInst = new Chart(document.getElementById('dailyChart'), {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => `${r.date.getUTCDate()}일(${DAYS[r.date.getUTCDay()]})`),
+      datasets: [
+        { label: '매출액', data: rows.map(r => r.sales), backgroundColor: 'rgba(46,114,210,0.75)', borderColor: '#2e72d2', borderWidth: 1 },
+        { label: '마진액', data: rows.map(r => r.margin), backgroundColor: 'rgba(30,158,91,0.75)', borderColor: '#1e9e5b', borderWidth: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        y: { ticks: { callback: v => (v/10000).toFixed(0)+'만' } }
+      }
+    }
+  });
+}
+
+function renderDailyTable(rows) {
+  const totalSales  = sumField(rows, 'sales');
+  const totalMargin = rows.reduce((s,r) => s + r.margin, 0);
+  document.getElementById('dailyTableWrap').innerHTML = `
+    <table>
+      <thead><tr><th class="tc">날짜</th><th class="tc">요일</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+      <tbody>
+        ${rows.map(r => {
+          const d = r.date.getUTCDay();
+          const mr = r.sales > 0 ? r.margin / r.sales : 0;
+          return `<tr class="${d===0?'sun':d===6?'sat':''}">
+            <td class="tc">${r.date.getUTCMonth()+1}/${r.date.getUTCDate()}</td>
+            <td class="tc">${DAYS[d]}</td>
+            <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
+            <td class="tr">${r.hasMargin ? Math.round(r.margin).toLocaleString() : '-'}</td>
+            <td class="tc ${mgClass(mr)}">${r.hasMargin ? pct(mr) : '-'}</td>
+          </tr>`;
+        }).join('')}
+        <tr class="bold-row">
+          <td class="tc" colspan="2">합계</td>
+          <td class="tr">${Math.round(totalSales).toLocaleString()}</td>
+          <td class="tr">${Math.round(totalMargin).toLocaleString()}</td>
+          <td class="tc ${mgClass(totalSales>0?totalMargin/totalSales:0)}">${pct(totalSales>0?totalMargin/totalSales:0)}</td>
+        </tr>
+      </tbody>
+    </table>`;
+}
+
+function renderCatChart(catRows) {
+  if (catChartInst) catChartInst.destroy();
+  catChartInst = new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: {
+      labels: catRows.map(r => r.cat),
+      datasets: [{ data: catRows.map(r => r.sales), backgroundColor: CAT_COLORS.slice(0, catRows.length), borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${Math.round(ctx.raw).toLocaleString()}원` } }
+      }
+    }
+  });
+}
+
+function renderCatTable(catRows, showroomSales) {
+  document.getElementById('catTableWrap').innerHTML = `
+    <table>
+      <thead><tr><th class="tl">카테고리</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tc">비중</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+      <tbody>
+        ${catRows.map((r, i) => `<tr>
+          <td class="tl">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${CAT_COLORS[i]};margin-right:6px;vertical-align:middle;"></span>
+            ${r.cat}
+          </td>
+          <td class="tc">${r.qty.toLocaleString()}</td>
+          <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
+          <td class="tc">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="prog-bar-wrap" style="flex:1;min-width:50px;"><div class="prog-bar" style="width:${(r.shareRate*100).toFixed(1)}%"></div></div>
+              <span>${(r.shareRate*100).toFixed(1)}%</span>
+            </div>
+          </td>
+          <td class="tr">${Math.round(r.margin).toLocaleString()}</td>
+          <td class="tc ${mgClass(r.marginRate)}">${pct(r.marginRate)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderTop5(top5) {
+  const cats = Object.keys(top5);
+  document.getElementById('catTabs').innerHTML = cats.map((c, i) =>
+    `<button class="cat-tab ${i===0?'active':''}" data-cat="${c}" onclick="switchCat('${c}')">${c}</button>`
+  ).join('');
+  document.getElementById('catPanes').innerHTML = cats.map((cat, i) => `
+    <div class="cat-pane ${i===0?'active':''}" data-cat="${cat}">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="tc">순위</th><th class="tl" style="min-width:200px;">상품명</th><th class="tc">수량</th><th class="tr">매출액</th><th class="tr">마진액</th><th class="tc">마진율</th></tr></thead>
+          <tbody>
+            ${top5[cat].map((p, idx) => {
+              const mr = p.sales > 0 && p.hasMargin ? p.margin / p.sales : null;
+              return `<tr>
+                <td class="tc"><span class="rank-badge">${idx+1}</span></td>
+                <td class="tl">${p.name}</td>
+                <td class="tc">${p.qty.toLocaleString()}</td>
+                <td class="tr">${Math.round(p.sales).toLocaleString()}</td>
+                <td class="tr">${p.hasMargin ? Math.round(p.margin).toLocaleString() : '-'}</td>
+                <td class="tc ${mr!=null?mgClass(mr):''}">${mr != null ? pct(mr) : '-'}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`).join('');
+}
+
+function switchCat(cat) {
+  document.querySelectorAll('.cat-tab').forEach(el => el.classList.toggle('active', el.dataset.cat === cat));
+  document.querySelectorAll('.cat-pane').forEach(el => el.classList.toggle('active', el.dataset.cat === cat));
+}
+
+function renderOnlineItems(d) {
+  const sec = document.getElementById('onlineItemSection');
+  if (!d.onlineItems || !d.onlineItems.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+
+  const activePlatforms = [...new Set(d.onlineItems.map(r => r.platform))].filter(Boolean)
+    .sort((a, b) => {
+      const sa = d.onlineItems.filter(r => r.platform === a).reduce((s,r)=>s+r.sales,0);
+      const sb = d.onlineItems.filter(r => r.platform === b).reduce((s,r)=>s+r.sales,0);
+      return sb - sa;
+    });
+  const tabs = ['전체', ...activePlatforms];
+
+  document.getElementById('onlineItemTabs').innerHTML = tabs.map((t, i) =>
+    `<button class="cat-tab ${i===0?'active':''}" data-ptab="${t}" onclick="switchOnlineTab('${t}')">${t}</button>`
+  ).join('');
+
+  document.getElementById('onlineItemPanes').innerHTML = tabs.map((tab, i) => {
+    const items = tab === '전체' ? d.onlineItems : d.onlineItems.filter(r => r.platform === tab);
+    const total = items.reduce((s, r) => s + r.sales, 0);
+    const totalQty = items.reduce((s, r) => s + r.qty, 0);
+    const totalMargin = items.reduce((s, r) => s + (r.hasMargin ? r.margin : 0), 0);
+    const showPlat = tab === '전체';
+    return `<div class="cat-pane ${i===0?'active':''}" data-ptab="${tab}">
+      <div class="tbl-wrap tbl-wrap-scroll">
+        <table>
+          <thead><tr>
+            ${showPlat ? '<th class="tl">플랫폼</th>' : ''}
+            <th class="tl">카테고리</th>
+            <th class="tl" style="min-width:200px;">상품명</th>
+            <th class="tc">수량</th>
+            <th class="tr">매출액</th>
+            <th class="tc">비중</th>
+            <th class="tr">마진액</th>
+            <th class="tc">마진율</th>
+          </tr></thead>
+          <tbody>
+            ${items.map(r => {
+              const mr = r.sales > 0 && r.hasMargin ? r.margin / r.sales : null;
+              const share = total > 0 ? r.sales / total : 0;
+              const platIdx = PLATFORMS.indexOf(r.platform);
+              const platColor = platIdx >= 0 ? PLATFORM_COLORS[platIdx] : '#999';
+              return `<tr>
+                ${showPlat ? `<td class="tl"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${platColor};margin-right:5px;vertical-align:middle;"></span>${r.platform}</td>` : ''}
+                <td class="tl">${r.cat}</td>
+                <td class="tl">${r.name}</td>
+                <td class="tc">${r.qty.toLocaleString()}</td>
+                <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
+                <td class="tc">
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <div class="prog-bar-wrap" style="flex:1;min-width:40px;"><div class="prog-bar" style="width:${(share*100).toFixed(1)}%;"></div></div>
+                    <span style="min-width:32px;">${(share*100).toFixed(1)}%</span>
+                  </div>
+                </td>
+                <td class="tr">${r.hasMargin ? Math.round(r.margin).toLocaleString() : '-'}</td>
+                <td class="tc ${mr!=null?mgClass(mr):''}">${mr != null ? pct(mr) : '-'}</td>
+              </tr>`;
+            }).join('')}
+            <tr class="bold-row">
+              ${showPlat ? '<td></td>' : ''}
+              <td colspan="2" class="tl">합계</td>
+              <td class="tc">${totalQty.toLocaleString()}</td>
+              <td class="tr">${Math.round(total).toLocaleString()}</td>
+              <td class="tc">100%</td>
+              <td class="tr">${Math.round(totalMargin).toLocaleString()}</td>
+              <td class="tc ${total>0?mgClass(totalMargin/total):''}">${total>0?pct(totalMargin/total):'-'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function switchOnlineTab(tab) {
+  document.querySelectorAll('[data-ptab]').forEach(el => {
+    if (el.classList.contains('cat-tab')) el.classList.toggle('active', el.dataset.ptab === tab);
+    if (el.classList.contains('cat-pane')) el.classList.toggle('active', el.dataset.ptab === tab);
+  });
+}
+
+function renderOnlineSection(d) {
+  const sec = document.getElementById('onlineSection');
+  if (!d.onlineDailyRows.length || d.onlineTotal === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+
+  // 도넛 차트 (플랫폼 비중)
+  if (onlineChartInst) onlineChartInst.destroy();
+  const activePlatforms = PLATFORMS.filter(p => (d.onlineByPlatform[p] || 0) > 0);
+  onlineChartInst = new Chart(document.getElementById('onlineChart'), {
+    type: 'doughnut',
+    data: {
+      labels: activePlatforms,
+      datasets: [{
+        data: activePlatforms.map(p => d.onlineByPlatform[p]),
+        backgroundColor: activePlatforms.map(p => PLATFORM_COLORS[PLATFORMS.indexOf(p)]),
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 12 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${Math.round(ctx.raw).toLocaleString()}원 (${pct(ctx.raw/d.onlineTotal)})` } }
+      }
+    }
+  });
+
+  // 플랫폼별 합계 테이블 — 비중은 전체 매출(totalSales) 기준
+  const onlineShareOfTotal = d.totalSales > 0 ? d.onlineTotal / d.totalSales : 0;
+  const onlineTotalMargin = d.onlineMargin || 0;
+  const onlineTotalMr = d.onlineTotal > 0 ? onlineTotalMargin / d.onlineTotal : 0;
+  const baseMR = d.onlineGrossMR || d.baseMarginRate || 0;
+  const infoText = d.isPayDetail
+    ? `✅ <strong>결제 시각 매칭으로 온라인 매출 정확히 분리</strong> &nbsp;|&nbsp; 원가 마진율 ${pct(baseMR)} (온라인 실제 기준) · 순마진 = 원가마진 × (1 − 수수료율)`
+    : `⚠️ <strong>추정치</strong> — 결제 상세내역 탭 없음 &nbsp;|&nbsp; 원가 마진율 ${pct(baseMR)} (전체 평균) − 수수료율로 계산`;
+  document.getElementById('onlineTableWrap').innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid ${d.isPayDetail ? 'var(--green)' : 'var(--orange)'};">
+      ${infoText}
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="tl">플랫폼</th>
+          <th class="tr">매출액</th>
+          <th class="tc">전체 매출 비중</th>
+          <th class="tc" style="color:#ffcc80;">원가 마진율</th>
+          <th class="tc" style="color:#ff8a80;">수수료율</th>
+          <th class="tc" style="color:#80cbc4;">순 마진율</th>
+          <th class="tr">순 마진액</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${PLATFORMS.map((p, i) => {
+          const v = d.onlineByPlatform[p] || 0;
+          const shareOfTotal = d.totalSales > 0 ? v / d.totalSales : 0;
+          const marginVal = (d.onlineMarginByPlatform && d.onlineMarginByPlatform[p] != null) ? d.onlineMarginByPlatform[p] : 0;
+          const feeAmt = (d.onlineFeeByPlatform && d.onlineFeeByPlatform[p] != null) ? d.onlineFeeByPlatform[p] : Math.round(v * (PLATFORM_FEE[p] || 0));
+          const effectiveFeeRate = v > 0 ? feeAmt / v : (PLATFORM_FEE[p] || 0);
+          const grossMarginVal = (d.grossByPlatform && d.grossByPlatform[p] != null) ? d.grossByPlatform[p] : 0;
+          const grossMR = v > 0 ? grossMarginVal / v : baseMR;
+          const netMR = v > 0 ? marginVal / v : 0;
+          return `<tr>
+            <td class="tl">
+              <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${PLATFORM_COLORS[i]};margin-right:6px;vertical-align:middle;"></span>
+              ${p}
+            </td>
+            <td class="tr">${v > 0 ? Math.round(v).toLocaleString() : '-'}</td>
+            <td class="tc">
+              ${v > 0 ? `<div style="display:flex;align-items:center;gap:6px;">
+                <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:${(shareOfTotal*100).toFixed(1)}%;background:${PLATFORM_COLORS[i]};"></div></div>
+                <span>${(shareOfTotal*100).toFixed(1)}%</span>
+              </div>` : '-'}
+            </td>
+            <td class="tc" style="color:var(--muted);">${v > 0 ? pct(grossMR) : '-'}</td>
+            <td class="tc" style="color:var(--red);">${v > 0 ? '−' + (effectiveFeeRate*100).toFixed(1)+'%' : '-'}</td>
+            <td class="tc ${v > 0 ? mgClass(netMR) : ''}">${v > 0 ? pct(netMR) : '-'}</td>
+            <td class="tr">${v > 0 ? Math.round(marginVal).toLocaleString() : '-'}</td>
+          </tr>`;
+        }).join('')}
+        <tr class="bold-row">
+          <td class="tl">온라인 합계</td>
+          <td class="tr">${Math.round(d.onlineTotal).toLocaleString()}</td>
+          <td class="tc">${(onlineShareOfTotal*100).toFixed(1)}%</td>
+          <td class="tc">-</td>
+          <td class="tc">-</td>
+          <td class="tc ${mgClass(onlineTotalMr)}">${pct(onlineTotalMr)}</td>
+          <td class="tr">${Math.round(onlineTotalMargin).toLocaleString()}</td>
+        </tr>
+      </tbody>
+    </table>`;
+}
+
+function renderB2B(rows) {
+  if (!rows.length) { document.getElementById('b2bSection').style.display = 'none'; return; }
+  document.getElementById('b2bSection').style.display = 'block';
+  document.getElementById('b2bTableWrap').innerHTML = `
+    <table>
+      <thead><tr><th class="tc">날짜</th><th class="tl">카테고리</th><th class="tl">업체</th><th class="tc">수량</th><th class="tr">금액</th><th class="tr">마진</th><th class="tl">비고</th></tr></thead>
+      <tbody>
+        ${rows.map(r => {
+          const mr = r.margin != null && r.sales > 0 ? r.margin / r.sales : null;
+          return `<tr>
+            <td class="tc">${r.date}</td>
+            <td class="tl">${r.cat}</td>
+            <td class="tl">${r.vendor}</td>
+            <td class="tc">${r.qty.toLocaleString()}</td>
+            <td class="tr">${Math.round(r.sales).toLocaleString()}</td>
+            <td class="tr">${r.margin != null ? Math.round(r.margin).toLocaleString() : '-'}</td>
+            <td class="tl" style="white-space:normal;max-width:260px;font-size:11px;color:#555;">${r.note}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ─── HELPERS ───
+function fmt(n) { return n == null || isNaN(n) ? '-' : Math.round(n).toLocaleString('ko-KR') + '원'; }
+function pct(n) { return n == null || isNaN(n) ? '-' : (n * 100).toFixed(1) + '%'; }
+function sumField(arr, f) { return arr.reduce((s, r) => s + (Number(r[f]) || 0), 0); }
+function mgClass(r) { if (!r) return ''; return r >= 0.7 ? 'mg-good' : r >= 0.5 ? 'mg-mid' : 'mg-low'; }
+
+// UTC 기준 날짜 키
+function dateKey(d) {
+  return `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
+}
+
+// Excel 시리얼 / Date 객체 / 문자열 → UTC midnight Date
+function parseDate(val) {
+  if (val == null) return null;
+  if (typeof val === 'number' && val > 25000 && val < 120000) {
+    const ms = Math.round((val - 25569) * 86400 * 1000);
+    const d = new Date(ms);
+    if (isNaN(d.getTime())) return null;
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  }
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    return new Date(Date.UTC(val.getUTCFullYear(), val.getUTCMonth(), val.getUTCDate()));
+  }
+  if (typeof val === 'string') {
+    const m = val.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+    if (m) return new Date(Date.UTC(+m[1], +m[2]-1, +m[3]));
+  }
+  return null;
+}
+
+// 원가 파싱 — 숫자 또는 수식 문자열(=1690000*0.3) 처리
+function parseCost(val) {
+  if (val == null) return null;
+  if (typeof val === 'number' && !isNaN(val)) return val;
+  if (typeof val === 'string') {
+    const clean = val.replace(/^=/, '').replace(/,/g, '').trim();
+    if (/^[\d\s\.\+\-\*\/\(\)]+$/.test(clean) && clean.length < 50) {
+      try {
+        const result = Function('"use strict"; return (' + clean + ')')();
+        if (typeof result === 'number' && !isNaN(result)) return result;
+      } catch(e) {}
+    }
+  }
+  return null;
+}
+
+// 결제 시각 → 분 단위 매칭 키 (YYYY-MM-DD HH:MM)
+// 매출리포트 "주문시작시각"(문자열)과 결제탭 "결제시각"(숫자 시리얼 or 문자열) 1초 차이 허용
+function tsMinKey(val) {
+  if (val == null) return null;
+  if (typeof val === 'number' && val > 25000) {
+    const intPart = Math.floor(val);
+    const frac = val - intPart;
+    const dateMs = Math.round((intPart - 25569) * 86400000);
+    const d = new Date(dateMs);
+    const totalSec = Math.round(frac * 86400);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')} ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+  const s = String(val);
+  const mm = s.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})[\sT]+(\d{1,2}):(\d{1,2})/);
+  if (mm) return `${mm[1]}-${mm[2].padStart(2,'0')}-${mm[3].padStart(2,'0')} ${mm[4].padStart(2,'0')}:${mm[5].padStart(2,'0')}`;
+  return null;
+}
+
+// 매입사 / 주문채널 → PLATFORM 키 매핑
+// 온라인 플랫폼이면 플랫폼 키 반환, 카드사(오프라인)이면 null 반환
+function matchPlatform(val) {
+  if (!val) return null;
+  const s = String(val).trim();
+  // 명확한 오프라인 카드사 목록 (기타 포함)
+  if (/^(포스|pos|기타|온라인|online|삼성|하나|신한|현대|kb국민|롯데|비씨|농협|우리|씨티|수협|광주|전북|제주|카카오뱅크|토스|토스페이|페이코|애플페이|삼성페이)$/i.test(s)) return null;
+  // 온라인 플랫폼 매칭
+  if (/29cm/i.test(s)) return '29cm';
+  if (/네이버|스마트스토어/i.test(s)) return '네이버 스마트스토어';
+  if (/오늘의.?집/i.test(s)) return '오늘의 집';
+  if (/카페\s*24/i.test(s)) return '카페24';
+  if (/카카오.?선물|카카오.?쇼핑|kakao.?gift|kakao.?shop/i.test(s)) return '카카오선물하기';
+  if (/현대.?[mM포]포인트|hmall|h\.mall/i.test(s)) return '현대 M포인트몰';
+  if (/아난티/i.test(s)) return '아난티몰';
+  if (/토스.?쇼핑|toss.?shop/i.test(s)) return '토스 쇼핑';
+  // 알 수 없는 값: PLATFORMS에 있으면 플랫폼, 없으면 null(오프라인)
+  return PLATFORMS.includes(s) ? s : null;
+}
+
+
+function showError(msg) {
+  document.getElementById('uploadSection').style.display = 'none';
+  document.getElementById('dashboard').classList.add('visible');
+  document.getElementById('errorBox').innerHTML = `<div class="error-box">⚠️ ${msg}</div>`;
+}
+</script>
 </body>
 </html>
