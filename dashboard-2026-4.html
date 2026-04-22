@@ -54,8 +54,8 @@ body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; b
 .sum-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
 .sum-card-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0px; border-bottom: 1px solid rgb(240, 240, 240); }
 .sum-card-row:last-child { border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; }
-.sum-card-key { color: var(--muted); }
-.sum-card-val { font-weight: 700; }
+.sum-card-key { color: var(--muted); white-space: nowrap; }
+.sum-card-val { font-weight: 700; white-space: nowrap; text-align: right; }
 .big-num { font-size: 18px; color: var(--accent); }
 .sec { background: var(--card); border-radius: 14px; padding: 20px 22px; box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 4px; margin-bottom: 20px; }
 .sec-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
@@ -136,6 +136,22 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     .dash-topbar-right button { display: none !important; }
     .gh-modal-overlay { display: none !important; }
     body { background: #f0f2f5; }
+    /* 모바일 강제 적용 (저장된 HTML용) */
+    @media (max-width: 900px) {
+      .summary-row { grid-template-columns: repeat(2, 1fr) !important; }
+      .two-col, .three-col { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 640px) {
+      .dash-body { padding: 10px !important; }
+      .summary-row { gap: 8px !important; margin-bottom: 12px !important; }
+      .sum-card { padding: 12px !important; }
+      .big-num { font-size: 13px !important; }
+      .sum-card-val { font-size: 11px !important; white-space: nowrap; }
+      .sum-card-key { font-size: 11px !important; }
+      .chart-wrap { height: 200px !important; }
+      .mix-inner { display: flex !important; flex-direction: column !important; }
+      .sec { padding: 12px !important; }
+    }
   </style>
 </head>
 <body>
@@ -153,7 +169,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
   </div>
   <div class="dash-body">
     <div id="errorBox"></div>
-    <div class="summary-row" id="summaryCards" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="summary-row" id="summaryCards" style="">
     <div class="sum-card">
       <div class="sum-card-label">🏪 오프라인 (쇼룸)</div>
       <div class="sum-card-row"><span class="sum-card-key">매출액</span><span class="sum-card-val big-num">19,526,200원</span></div>
@@ -183,7 +199,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">📊 채널별 매출 비중</div>
       <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1320" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 660px;"></canvas></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1358" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 679px;"></canvas></div>
         </div>
         <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;">
     <table style="width:100%;">
@@ -260,7 +276,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
@@ -408,7 +424,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
@@ -876,7 +892,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" width="1320" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 660px;"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart" width="1618" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 809px;"></canvas></div>
         </div>
         <div class="tbl-wrap" id="onlineTableWrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
