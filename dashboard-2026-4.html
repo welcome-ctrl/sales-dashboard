@@ -206,7 +206,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">📊 채널별 매출 비중</div>
       <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="882" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 441px;"></canvas></div>
         </div>
         <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;">
     <table style="width:100%;">
@@ -283,7 +283,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart" width="1594" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 797px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
@@ -431,7 +431,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart" width="1594" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 797px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
@@ -899,7 +899,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart" width="1594" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 797px;"></canvas></div>
         </div>
         <div class="tbl-wrap" id="onlineTableWrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
@@ -910,11 +910,10 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <tr>
           <th class="tl">플랫폼</th>
           <th class="tr">매출액</th>
-          <th class="tc mob-hide">전체 매출 비중</th>
-          <th class="tc mob-hide" style="color:#ffcc80;">원가 마진율</th>
+          <th class="tc mob-hide">비중</th>
+          <th class="tr mob-hide">마진액</th>
           <th class="tc" style="color:#ff8a80;">수수료율</th>
-          <th class="tc" style="color:#80cbc4;">순 마진율</th>
-          <th class="tr mob-hide">순 마진액</th>
+          <th class="tc" style="color:#80cbc4;">마진율</th>
         </tr>
       </thead>
       <tbody>
@@ -930,10 +929,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
                 <span>0.6%</span>
               </div>
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">54.3%</td>
+            <td class="tr mob-hide">98,600</td>
             <td class="tc" style="color:var(--red);">−11.8%</td>
             <td class="tc mg-low">42.5%</td>
-            <td class="tr mob-hide">98,600</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#03c75a;margin-right:6px;vertical-align:middle;"></span>
@@ -946,10 +944,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
                 <span>0.7%</span>
               </div>
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">79.8%</td>
+            <td class="tr mob-hide">181,540</td>
             <td class="tc" style="color:var(--red);">−6.0%</td>
             <td class="tc mg-good">73.8%</td>
-            <td class="tr mob-hide">181,540</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#50c878;margin-right:6px;vertical-align:middle;"></span>
@@ -962,10 +959,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
                 <span>0.4%</span>
               </div>
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">83.7%</td>
+            <td class="tr mob-hide">114,750</td>
             <td class="tc" style="color:var(--red);">−15.0%</td>
             <td class="tc mg-mid">68.7%</td>
-            <td class="tr mob-hide">114,750</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ff6b35;margin-right:6px;vertical-align:middle;"></span>
@@ -978,10 +974,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
                 <span>0.6%</span>
               </div>
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">72.2%</td>
+            <td class="tr mob-hide">162,220</td>
             <td class="tc" style="color:var(--red);">−3.5%</td>
             <td class="tc mg-mid">68.7%</td>
-            <td class="tr mob-hide">162,220</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ffcd00;margin-right:6px;vertical-align:middle;"></span>
@@ -991,10 +986,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <td class="tc mob-hide">
               -
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">-</td>
+            <td class="tr mob-hide">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e84060;margin-right:6px;vertical-align:middle;"></span>
@@ -1004,10 +998,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <td class="tc mob-hide">
               -
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">-</td>
+            <td class="tr mob-hide">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7b5ea7;margin-right:6px;vertical-align:middle;"></span>
@@ -1017,10 +1010,9 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <td class="tc mob-hide">
               -
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">-</td>
+            <td class="tr mob-hide">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0064ff;margin-right:6px;vertical-align:middle;"></span>
@@ -1030,19 +1022,17 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
             <td class="tc mob-hide">
               -
             </td>
-            <td class="tc mob-hide" style="color:var(--muted);">-</td>
+            <td class="tr mob-hide">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr mob-hide">-</td>
           </tr>
         <tr class="bold-row">
           <td class="tl">온라인 합계</td>
           <td class="tr">881,000</td>
           <td class="tc mob-hide">2.3%</td>
-          <td class="tc mob-hide">-</td>
+          <td class="tr mob-hide">557,110</td>
           <td class="tc">-</td>
           <td class="tc mg-mid">63.2%</td>
-          <td class="tr mob-hide">557,110</td>
         </tr>
       </tbody>
     </table></div>
