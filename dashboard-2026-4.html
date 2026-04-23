@@ -283,7 +283,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
@@ -431,7 +431,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
@@ -899,7 +899,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" style="display: block; box-sizing: border-box; height: 200px; width: 441px;" width="882" height="400"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart" style="display: block; box-sizing: border-box; height: 200px; width: 806px;" width="1612" height="400"></canvas></div>
         </div>
         <div class="tbl-wrap" id="onlineTableWrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
@@ -910,11 +910,11 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
         <tr>
           <th class="tl">플랫폼</th>
           <th class="tr">매출액</th>
-          <th class="tc">전체 매출 비중</th>
-          <th class="tc" style="color:#ffcc80;">원가 마진율</th>
+          <th class="tc mob-hide">전체 매출 비중</th>
+          <th class="tc mob-hide" style="color:#ffcc80;">원가 마진율</th>
           <th class="tc" style="color:#ff8a80;">수수료율</th>
           <th class="tc" style="color:#80cbc4;">순 마진율</th>
-          <th class="tr">순 마진액</th>
+          <th class="tr mob-hide">순 마진액</th>
         </tr>
       </thead>
       <tbody>
@@ -924,125 +924,125 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
               29cm
             </td>
             <td class="tr">232,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.6%;background:#1a1a2e;"></div></div>
                 <span>0.6%</span>
               </div>
             </td>
-            <td class="tc" style="color:var(--muted);">54.3%</td>
+            <td class="tc mob-hide" style="color:var(--muted);">54.3%</td>
             <td class="tc" style="color:var(--red);">−11.8%</td>
             <td class="tc mg-low">42.5%</td>
-            <td class="tr">98,600</td>
+            <td class="tr mob-hide">98,600</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#03c75a;margin-right:6px;vertical-align:middle;"></span>
               네이버 스마트스토어
             </td>
             <td class="tr">246,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.7%;background:#03c75a;"></div></div>
                 <span>0.7%</span>
               </div>
             </td>
-            <td class="tc" style="color:var(--muted);">79.8%</td>
+            <td class="tc mob-hide" style="color:var(--muted);">79.8%</td>
             <td class="tc" style="color:var(--red);">−6.0%</td>
             <td class="tc mg-good">73.8%</td>
-            <td class="tr">181,540</td>
+            <td class="tr mob-hide">181,540</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#50c878;margin-right:6px;vertical-align:middle;"></span>
               오늘의 집
             </td>
             <td class="tr">167,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.4%;background:#50c878;"></div></div>
                 <span>0.4%</span>
               </div>
             </td>
-            <td class="tc" style="color:var(--muted);">83.7%</td>
+            <td class="tc mob-hide" style="color:var(--muted);">83.7%</td>
             <td class="tc" style="color:var(--red);">−15.0%</td>
             <td class="tc mg-mid">68.7%</td>
-            <td class="tr">114,750</td>
+            <td class="tr mob-hide">114,750</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ff6b35;margin-right:6px;vertical-align:middle;"></span>
               카페24
             </td>
             <td class="tr">236,000</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               <div style="display:flex;align-items:center;gap:6px;">
                 <div class="prog-bar-wrap" style="flex:1;min-width:60px;"><div class="prog-bar" style="width:0.6%;background:#ff6b35;"></div></div>
                 <span>0.6%</span>
               </div>
             </td>
-            <td class="tc" style="color:var(--muted);">72.2%</td>
+            <td class="tc mob-hide" style="color:var(--muted);">72.2%</td>
             <td class="tc" style="color:var(--red);">−3.5%</td>
             <td class="tc mg-mid">68.7%</td>
-            <td class="tr">162,220</td>
+            <td class="tr mob-hide">162,220</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ffcd00;margin-right:6px;vertical-align:middle;"></span>
               카카오선물하기
             </td>
             <td class="tr">-</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               -
             </td>
-            <td class="tc" style="color:var(--muted);">-</td>
+            <td class="tc mob-hide" style="color:var(--muted);">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr">-</td>
+            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e84060;margin-right:6px;vertical-align:middle;"></span>
               현대 M포인트몰
             </td>
             <td class="tr">-</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               -
             </td>
-            <td class="tc" style="color:var(--muted);">-</td>
+            <td class="tc mob-hide" style="color:var(--muted);">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr">-</td>
+            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7b5ea7;margin-right:6px;vertical-align:middle;"></span>
               아난티몰
             </td>
             <td class="tr">-</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               -
             </td>
-            <td class="tc" style="color:var(--muted);">-</td>
+            <td class="tc mob-hide" style="color:var(--muted);">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr">-</td>
+            <td class="tr mob-hide">-</td>
           </tr><tr>
             <td class="tl">
               <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0064ff;margin-right:6px;vertical-align:middle;"></span>
               토스 쇼핑
             </td>
             <td class="tr">-</td>
-            <td class="tc">
+            <td class="tc mob-hide">
               -
             </td>
-            <td class="tc" style="color:var(--muted);">-</td>
+            <td class="tc mob-hide" style="color:var(--muted);">-</td>
             <td class="tc" style="color:var(--red);">-</td>
             <td class="tc ">-</td>
-            <td class="tr">-</td>
+            <td class="tr mob-hide">-</td>
           </tr>
         <tr class="bold-row">
           <td class="tl">온라인 합계</td>
           <td class="tr">881,000</td>
-          <td class="tc">2.3%</td>
-          <td class="tc">-</td>
+          <td class="tc mob-hide">2.3%</td>
+          <td class="tc mob-hide">-</td>
           <td class="tc">-</td>
           <td class="tc mg-mid">63.2%</td>
-          <td class="tr">557,110</td>
+          <td class="tr mob-hide">557,110</td>
         </tr>
       </tbody>
     </table></div>
@@ -1947,7 +1947,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
-              legend: { position: 'right', labels: { font: { size: 11 } } },
+              legend: { position: window.innerWidth < 640 ? 'bottom' : 'right', labels: { font: { size: window.innerWidth < 640 ? 9 : 11 }, boxWidth: 12 } },
               tooltip: { callbacks: { label: function(ctx) { return ' ' + ctx.label + ': ' + Math.round(ctx.raw).toLocaleString() + '원'; } } }
             }
           }
@@ -1959,7 +1959,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
-              legend: { position: 'right', labels: { font: { size: 12 } } },
+              legend: { position: window.innerWidth < 640 ? 'bottom' : 'right', labels: { font: { size: window.innerWidth < 640 ? 10 : 12 }, boxWidth: 12 } },
               tooltip: { callbacks: { label: function(ctx) {
                 var s = (__ot > 0 ? ctx.raw / __ot * 100 : 0).toFixed(1);
                 return ' ' + ctx.label + ': ' + Math.round(ctx.raw).toLocaleString() + '원 (' + s + '%)';
