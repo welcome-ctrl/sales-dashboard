@@ -171,7 +171,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
   <div class="dash-topbar">
     <div class="dash-topbar-title" id="topbarTitle">📊 2026년 5월 매출 대시보드</div>
     <div class="dash-topbar-right">
-      <span id="topbarFile" style="font-size:12px; color:rgba(255,255,255,0.6);">SS_2026년 5월 매출리포트.xlsx</span>
+      <span id="topbarFile" style="font-size:12px; color:rgba(255,255,255,0.6);">SS_2026년 5월 매출리포트.xlsx</span>
       <button class="btn btn-outline" onclick="downloadDashboard()">⬇ HTML 저장</button>
       <button class="btn btn-excel" onclick="downloadExcel()">📊 엑셀 다운로드</button>
       <button class="btn btn-github" onclick="openGitHubModal()">☁️ GitHub 저장</button>
@@ -210,7 +210,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">📊 채널별 매출 비중</div>
       <div class="two-col mix-inner" style="margin-bottom:0;">
         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="1320" height="400" style="display: block; box-sizing: border-box; height: 200px; width: 660px;"></canvas></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="mixChart" width="990" height="300" style="display: block; box-sizing: border-box; height: 200px; width: 660px;"></canvas></div>
         </div>
         <div id="mixTableWrap" style="display:flex;flex-direction:column;justify-content:center;">
     <table style="width:100%;">
@@ -287,7 +287,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">📅 일자별 매출 추이</div>
-        <div class="chart-wrap"><canvas id="dailyChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="dailyChart" width="957" height="345" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📋 일자별 매출 테이블</div>
@@ -495,7 +495,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
     <div class="two-col">
       <div class="sec">
         <div class="sec-title">🗂 카테고리별 매출</div>
-        <div class="chart-wrap"><canvas id="catChart" width="1276" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
+        <div class="chart-wrap"><canvas id="catChart" width="957" height="345" style="display: block; box-sizing: border-box; height: 230px; width: 638px;"></canvas></div>
       </div>
       <div class="sec">
         <div class="sec-title">📊 카테고리별 상세</div>
@@ -991,7 +991,7 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div class="sec-title">💻 온라인 플랫폼별 매출</div>
       <div class="two-col">
         <div>
-          <div class="chart-wrap"><canvas id="onlineChart" width="1320" height="460" style="display: block; box-sizing: border-box; height: 230px; width: 660px;"></canvas></div>
+          <div class="chart-wrap"><canvas id="onlineChart" width="990" height="345" style="display: block; box-sizing: border-box; height: 230px; width: 660px;"></canvas></div>
         </div>
         <div class="tbl-wrap" id="onlineTableWrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#f8f9fc;border-radius:8px;border-left:3px solid var(--green);">
@@ -3663,40 +3663,36 @@ tbody tr:hover td { background: rgb(248, 249, 252); }
       <div style="font-size:12px;font-weight:700;color:#1a2a4a;margin-bottom:12px;">
         📈 전월 비교
         <span style="font-weight:400;color:#888;font-size:11px;">
-          — 전월: 2026년 4월
+          — 전월 데이터 없음 (다음 달부터 표시)
         </span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
         <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
       <div style="font-size:11px;color:#888;margin-bottom:4px;">총 매출</div>
       <div style="font-size:16px;font-weight:700;color:#2e72d2;">11134만원</div>
-      <div style="font-size:11px;color:#1e9e5b;font-weight:700;margin-top:3px;">▲ 8676만원</div>
-           <div style="font-size:10px;color:#aaa;margin-top:1px;">전월 2458만원</div>
+      <div style="font-size:11px;color:#bbb;margin-top:2px;">전월 데이터 없음</div>
     </div>
         <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
       <div style="font-size:11px;color:#888;margin-bottom:4px;">마진율</div>
       <div style="font-size:16px;font-weight:700;color:#2e72d2;">54.5%</div>
-      <div style="font-size:11px;color:#e05252;font-weight:700;margin-top:3px;">▼ 14.0%p</div>
-           <div style="font-size:10px;color:#aaa;margin-top:1px;">전월 68.4%</div>
+      <div style="font-size:11px;color:#bbb;margin-top:2px;">전월 데이터 없음</div>
     </div>
         <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
       <div style="font-size:11px;color:#888;margin-bottom:4px;">온라인 비중</div>
       <div style="font-size:16px;font-weight:700;color:#2e72d2;">4.2%</div>
-      <div style="font-size:11px;color:#1e9e5b;font-weight:700;margin-top:3px;">▲ 0.6%p</div>
-           <div style="font-size:10px;color:#aaa;margin-top:1px;">전월 3.6%</div>
+      <div style="font-size:11px;color:#bbb;margin-top:2px;">전월 데이터 없음</div>
     </div>
         <div style="background:white;border-radius:8px;padding:12px;text-align:center;">
       <div style="font-size:11px;color:#888;margin-bottom:4px;">총 마진액</div>
       <div style="font-size:16px;font-weight:700;color:#2e72d2;">6063만원</div>
-      <div style="font-size:11px;color:#1e9e5b;font-weight:700;margin-top:3px;">▲ 4381만원</div>
-           <div style="font-size:10px;color:#aaa;margin-top:1px;">전월 1682만원</div>
+      <div style="font-size:11px;color:#bbb;margin-top:2px;">전월 데이터 없음</div>
     </div>
       </div>
       
     </div>
 
     <div style="margin-top:14px;font-size:11px;color:#aaa;text-align:right;">
-      🤖 Claude AI 자동 분석 · 2026년 5월 · SS_2026년 5월 매출리포트.xlsx
+      🤖 Claude AI 자동 분석 · 2026년 5월 · SS_2026년 5월 매출리포트.xlsx
     </div></div>
     <div class="sec" id="b2bSection" style="display: block;">
       <div class="sec-title">🤝 B2B / 외부 매출</div>
